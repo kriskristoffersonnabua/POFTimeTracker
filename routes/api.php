@@ -13,8 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::group(['prefix' => '/projects'], function ($route) {
+        Route::get('/', 'API\Projects\ProjectsController@index');
+        Route::post('/', 'API\Projects\ProjectsController@store');
+        Route::group(['prefix' => '/{projectsID:[0-9]+}'], function ($route) {
+            Route::PUT('/', 'API\Projects\ProjectsController@update');
+            Route::DELETE('/', 'API\Projects\ProjectsController@delete');
+        });
+    });
 });
 
 Route::post('/login', 'Auth\APILoginController@login');
