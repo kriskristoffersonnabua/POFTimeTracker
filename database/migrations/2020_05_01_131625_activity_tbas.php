@@ -19,6 +19,10 @@ class ActivityTbas extends Migration
             
             $table->string('tba')->default('');
             $table->timestamps();
+            $table->foreign('activity_id', 'foreign_activity')
+                  ->references('id')
+                  ->on('activities')
+                  ->onDelete('cascade');
         });
     }
 

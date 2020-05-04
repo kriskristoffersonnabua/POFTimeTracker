@@ -23,6 +23,16 @@ class TimeHistory extends Migration
             $table->timestamp('time_end')->nullable()->default(null);
             $table->float('time_consumed')->nullable()->default(null);
             $table->timestamps();
+
+            $table->foreign('user_id', 'foreign_user')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+
+            $table->foreign('activity_id', 'foreign_activity')
+                  ->references('id')
+                  ->on('activities')
+                  ->onDelete('cascade');
         });
     }
 

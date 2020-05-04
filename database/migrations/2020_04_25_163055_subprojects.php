@@ -22,6 +22,16 @@ class Subprojects extends Migration
             $table->string('subproject_name')->nullable()->default(null);
             $table->string('description')->nullable()->default(null);
             $table->timestamps();
+
+            $table->foreign('project_id', 'foreign_project')
+                ->references('id')
+                ->on('projects')
+                ->onDelete('cascade');
+
+            $table->foreign('user_id', 'foreign_user')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

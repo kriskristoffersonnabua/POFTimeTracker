@@ -21,6 +21,16 @@ class ActivityComments extends Migration
             $table->string('comment')->default('');
             $table->timestamp('date_added');
             $table->timestamps();
+
+            $table->foreign('activity_id', 'foreign_activity')
+                  ->references('id')
+                  ->on('activities')
+                  ->onDelete('cascade');
+
+            $table->foreign('user_id', 'foreign_user')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 

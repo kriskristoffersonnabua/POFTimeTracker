@@ -25,6 +25,16 @@ class Activites extends Migration
             $table->string('acceptance criteria')->nullable()->default('');
             $table->float('estimated_hours',8,2)->nullable()->default(0);
             $table->timestamps();
+
+            $table->foreign('subproject_id', 'foreign_subproject')
+                  ->references('id')
+                  ->on('subprojects')
+                  ->onDelete('cascade');
+
+            $table->foreign('employee_user_id', 'foreign_user')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 

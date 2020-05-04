@@ -20,6 +20,16 @@ class SubprojectEmployees extends Migration
             $table->timestamp('assigned_date');
 
             $table->timestamps();
+
+            $table->foreign('subproject_id', 'foreign_subproject')
+                  ->references('id')
+                  ->on('subprojects')
+                  ->onDelete('cascade');
+
+            $table->foreign('emp_user_id', 'foreign_user')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 

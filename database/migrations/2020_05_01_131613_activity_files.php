@@ -22,6 +22,11 @@ class ActivityFiles extends Migration
             $table->string('file_link')->default('');
             $table->timestamp('date_added');
             $table->timestamps();
+
+            $table->foreign('activity_id', 'foreign_activity')
+                  ->references('id')
+                  ->on('activities')
+                  ->onDelete('cascade');
         });
     }
 
