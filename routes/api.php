@@ -18,12 +18,14 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
-    Route::group(['prefix' => '/projects'], function ($route) {
+    Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'API\Projects\ProjectsController@index');
+        Route::get('/count', 'API\Projects\ProjectsController@count');
         Route::post('/', 'API\Projects\ProjectsController@store');
-        Route::group(['prefix' => '/{projectsID:[0-9]+}'], function ($route) {
-            Route::PUT('/', 'API\Projects\ProjectsController@update');
-            Route::DELETE('/', 'API\Projects\ProjectsController@delete');
+        Route::group(['prefix' => '/{projects_id}'], function () {
+            Route::get('/', 'API\Projects\ProjectsController@show');
+            Route::patch('/', 'API\Projects\ProjectsController@update');
+            Route::delete('/', 'API\Projects\ProjectsController@destroy');
         });
     });
 });
