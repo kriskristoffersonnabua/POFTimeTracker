@@ -22,7 +22,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', 'API\Projects\ProjectsController@index');
         Route::get('/count', 'API\Projects\ProjectsController@count');
         Route::post('/', 'API\Projects\ProjectsController@store');
-        Route::group(['prefix' => '/{projects_id}'], function () {
+        Route::group(['prefix' => '/{id}'], function () {
             Route::get('/', 'API\Projects\ProjectsController@show');
             Route::patch('/', 'API\Projects\ProjectsController@update');
             Route::delete('/', 'API\Projects\ProjectsController@destroy');

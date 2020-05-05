@@ -17,8 +17,6 @@ class ProjectsController extends Controller
     const DEFAULT_LIMIT = 10; 
 
     public function index(Request $request) {
-        $dateFields = ['created_at', 'updated_at'];
-
         $filters = [
             'id'            => $this->convertCommaSeparated($request->get('id')),
             'created_at'    => $this->convertDateRange($request->get('created_at')),
@@ -55,8 +53,8 @@ class ProjectsController extends Controller
         return $this->responseInJson(['count' => $query->count()]);
     }
 
-    public function show(Request $request, $projects_id) {
-        $project = app(Projects::class)->findOrFail($projects_id);
+    public function show(Request $request, $id) {
+        $project = app(Projects::class)->findOrFail($id);
 
         return $this->responseInJson($project);
     }
@@ -77,22 +75,22 @@ class ProjectsController extends Controller
         return $this->responseInJson($project);
     }
 
-    public function update(Request $request, $projects_id) {
+    public function update(Request $request, $id) {
         $data = [
             'project_no'    => $request->get('project_no'),
             'name'          => $request->get('name'),
             'description'   => $request->get('description')
         ];
 
-        $project = app(Projects::class)->findOrFail($projects_id);
+        $project = app(Projects::class)->findOrFail($id);
         $project->fill($data);
         $project->save();
         
         return $this->responseInJson($project);
     }
 
-    public function destroy(Request $request, $projects_id) {
-        $project = app(Projects::class)->findOrFail($projects_id);
+    public function destroy(Request $request, $id) {
+        $project = app(Projects::class)->findOrFail($id);
 
         if (!$project->subprojects()->exists()) {
             $project = $project->delete();
@@ -103,7 +101,9 @@ class ProjectsController extends Controller
         return $this->responseInJson(['is_deleted' => false]);
     }
 
-    protected function buildQuery($filters) {
+    protected function buildQuery($filters) {        
+        $dateFields = ['created_at', 'updated_at'];
+
         $query = app(Projects::class);
         foreach ($filters as $key => $value) {
             if (in_array($key, $dateFields)) {
