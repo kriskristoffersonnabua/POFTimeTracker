@@ -23,7 +23,8 @@ class UsersSeeder extends Seeder
 
         $users = [
             [
-                'name' => 'Admin',
+                'first_name' => 'Admin',
+                'last_name' => 'Account',
                 'email' => 'admin.laravel@labs64.com',
                 'password' => bcrypt('admin'),
                 'active' => true,
@@ -33,7 +34,8 @@ class UsersSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'Demo',
+                'first_name' => 'Demo',
+                'last_name' => 'Account',
                 'email' => 'demo.laravel@labs64.com',
                 'password' => bcrypt('demo'),
                 'active' => true,
