@@ -121,7 +121,7 @@ class ActivityController extends Controller
             $activity = Activity::find($activity_id);
             $activity->delete($params);
 
-            return $this->sendResponse($activity->toArray(), "Activity deleted");
+            return $this->sendResponse(['is_deleted' => true],"Activity deleted");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 

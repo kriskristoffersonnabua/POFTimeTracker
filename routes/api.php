@@ -28,6 +28,16 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/', 'API\Projects\ProjectsController@destroy');
         });
     });
+
+    Route::group(['prefix' => '/subprojects'], function () {
+        Route::get('/', 'API\Projects\SubProjectsController@index');
+        Route::post('/', 'API\Projects\SubProjectsController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'API\Projects\SubProjectsController@show');
+            Route::patch('/', 'API\Projects\SubProjectsController@update');
+            Route::delete('/', 'API\Projects\SubProjectsController@delete');
+        });
+    });
 });
 
 Route::post('/login', 'Auth\APILoginController@login');
