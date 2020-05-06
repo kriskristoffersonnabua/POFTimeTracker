@@ -28,6 +28,12 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/', 'API\Projects\ProjectsController@destroy');
         });
     });
+
+    Route::group(['prefix' => '/activities'], function() {
+        Route::group(['prefix' => '/activity-files'], function () {
+            Route::get('/', 'API\Activities\ActivityFilesController@index');
+        });
+    });
 });
 
 Route::post('/login', 'Auth\APILoginController@login');
