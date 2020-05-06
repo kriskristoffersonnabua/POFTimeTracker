@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Arr;
+
 /**
  * Global helpers file with misc functions.
  */
@@ -169,5 +171,39 @@ if(!function_exists('redirectToDashboad'))
         }
         
         return redirect($default);
+    }
+}
+
+if (! function_exists('is_empty')) {
+    /**
+     *  Checks if parameter is empty
+     *
+     * @param  mixed    $param
+     *
+     * @return boolean
+     */
+    function is_empty($param = '')
+    {
+        if (is_numeric($param)) {
+            return false;
+        }
+        return empty($param);
+    }
+}
+
+if (! function_exists('array_remove_null')) {
+    /**
+     * Removes empty or null element on array
+     *
+     * @param  array  $array
+     * @return array
+     */
+    function array_remove_null($array)
+    {
+        if (is_array($array)) {
+            return Arr::where($array, function ($value, $key) {
+                return (!is_null($value) && !is_empty($value));
+            });
+        }
     }
 }
