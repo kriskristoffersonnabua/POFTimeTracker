@@ -47,7 +47,7 @@
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.activities') }}">
                             <i class="fa fa-folder-open" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.activities') }}
                         </a>
