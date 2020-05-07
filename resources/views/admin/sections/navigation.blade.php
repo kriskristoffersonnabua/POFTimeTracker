@@ -40,7 +40,7 @@
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.subprojects') }}">
                             <i class="fa fa-tasks" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.sub_projects') }}
                         </a>

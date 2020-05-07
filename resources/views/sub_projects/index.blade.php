@@ -35,14 +35,32 @@
               <div class="col-md-12" style="text-align: center">
                 <div class="x_panel" style="width: 90%;">
                     <div class="x_title">
-                        <h2>Projects</h2>
+                        <h2>Sub Projects</h2>
+                        
                         <div class="title_right">
-                            <div class="col-md-1 col-sm-1 col-xs-1 form-group pull-right top_search">
-                                <button class="btn btn-success" type="button" data-toggle="modal" data-target=".add-modal">Add Project</button>
+                            <div class="col-md-4 col-sm-4 col-xs-4 form-group pull-right top_search">
+                                
+                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding-left: 30px">
+                                    <div class="col-md-3 col-sm-3 col-xs-3" style="padding-top: 10px; padding-left: 20px">
+                                        <label> Projects </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-8">
+                                        <select class="form-control">
+                                            @for ($i = 1; $i < 10 ; $i++)
+                                                <option> Project 0000{{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target=".add-sub-modal">Add Sub Project</button>
+                                </div>
                             </div>
-                        </div>
                         <div class="clearfix"></div>
+                        </div>
                     </div>
+
                     <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search" style="height: 30px">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for...">
@@ -51,16 +69,16 @@
                             </span>
                         </div>
                     </div>
+
                     <div class="x_content">
                         <!-- start project list -->
-                        
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" style="width: 5%">Project No.</th>
-                                <th class="th-sm" >Project Name</th>
-                                <th class="th-sm" >Project Description</th>
+                                <th class="th-sm" style="width: 5%">Sub Project No.</th>
+                                <th class="th-sm" >Name</th>
+                                <th class="th-sm" >Description</th>
                                 <th class="th-sm" style="width: 20%">Links</th>
                                 </tr>
                             </thead>
@@ -77,9 +95,12 @@
                                     DataTables has most features enabled by default, 
                                     so all you need to do to use it with your own tables is to call the construction function:
                                     </td>
-                                    <td style="width: 20%">
+                                    <td style="width: 25%">
+                                        <a href="#" class="btn btn-dark btn-sm" data-toggle="modal" data-target=".assign-modal">
+                                            <i class="fa fa-check"></i> Assign 
+                                            </a>
                                         <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
-                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".add-modal">
+                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".add-sub-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
                                         <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".delete-modal">
@@ -103,8 +124,12 @@
             @include('modals.delete-modal')
         </div>
 
-        <div class="modal fade add-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.add-modal')
+        <div class="modal fade add-sub-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            @include('modals.add-sub-modal')
+        </div>
+
+        <div class="modal fade assign-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            @include('modals.assign-modal')
         </div>
 
         <!---- End of Modals ---->
