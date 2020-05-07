@@ -33,7 +33,7 @@
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.projects') }}">
                             <i class="fa fa-book" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.projects') }}
                         </a>

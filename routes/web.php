@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Dashboard
     Route::get('/', 'DashboardController@index')->name('dashboard');
+    Route::get('/projects', 'ProjectController@index')->name('projects');
 
     //Users
     Route::get('users', 'UserController@index')->name('users');
