@@ -1,10 +1,14 @@
 <?php
 
 use Carbon\Carbon;
+use Database\traits\TruncateTable;
+use Database\traits\DisableForeignKeys;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class ProjectSeeder extends Seeder
+class ProjectsSeeder extends Seeder
 {
+    use DisableForeignKeys, TruncateTable;
     /**
      * Run the database seeds.
      *
@@ -12,20 +16,19 @@ class ProjectSeeder extends Seeder
      */
     public function run()
     {
-
-
-        $table->string('project_no')->nullable()->default(null);
-        $table->string('name')->nullable()->default(null);
-        $table->string('description')->nullable()->default(null);
+        $this->disableForeignKeys();
+        $this->truncate('projects');
         DB::table('projects')->insert([
             [
-                'id'              => 1,
-                'project_no'      => 1,
+                'id'              => 11,
+                'project_no'      => 11,
                 'name'            => 'Test project',
                 'description'     => 'Test project description',
                 'created_at'      => Carbon::now(),
                 'updated_at'      => Carbon::now()
             ]
         ]);
+
+        $this->enableForeignKeys();
     }
 }

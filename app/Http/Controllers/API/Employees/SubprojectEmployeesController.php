@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use lluminate\Routing\ResponseFactory;
+use Illuminate\Support\Arr;
 
 class SubprojectEmployeesController extends Controller
 {
@@ -82,7 +83,7 @@ class SubprojectEmployeesController extends Controller
         $emp_user_ids = [];
         try {
             $request->validate([
-                'emp_user_ids' => 'required',
+                'emp_user_id' => 'required',
                 'subproject_id' => 'required'
             ]);
             $emp_user_ids = $this->convertCommaSeparated($request->get('emp_user_id'));
@@ -90,15 +91,14 @@ class SubprojectEmployeesController extends Controller
 
             foreach ($emp_user_ids as $emp_user_id) {
                 $subprojectEmployee = new SubprojectEmployees;
-                $subprojectEmployee->emp_user_id = $emp_user_id;
-                $subprojectEmployee->subproject_id = $subproject_id;
+                $subprojectEmployee->emp_user_id = (int) $emp_user_id;
+                $subprojectEmployee->subproject_id = (int) $subproject_id;
                 $subprojectEmployee->assigned_date = Carbon::now();
                 $subprojectEmployee->created_at = Carbon::now();
                 $subprojectEmployee->updated_at = Carbon::now();
                 if ($subprojectEmployee->save()) {
                     $assignedEmployees[] = $subprojectEmployee->toArray();
                 }
-                throw new Exception();
             }
 
             return $this->sendResponse(['assignedEmployees' => $assignedEmployees], "Employees assigned.");
@@ -121,10 +121,11 @@ class SubprojectEmployeesController extends Controller
             ]);
             $id = $request->get('id');
 
-            $subprojectEmployee = app(SubprojectEmployees::class)->firstOrFail($id);
-            $subprojectEmployee->subproject_id = 0;
-
-            return $this->sendResponse(['is_unassigned' => true], "Employee unassigned.");
+            $subprojectEmployee = app(SubprojectEmployees::class)->findOrFail($id);
+            if ($subprojectEmployee->delete()) {
+                return $this->sendResponse(['is_unassigned' => true], "Subproject Employee unassigned");
+            }
+            throw new \Exception("Internal server error");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
             
@@ -148,8 +149,8 @@ class SubprojectEmployeesController extends Controller
             $subproject_id = $request->get('subproject_id');
 
             $subprojectEmployee = new SubprojectEmployees;
-            $subprojectEmployee->emp_user_id = $emp_user_id;
-            $subprojectEmployee->subproject_id = $subproject_id;
+            $subprojectEmployee->emp_user_id = (int) $emp_user_id;
+            $subprojectEmployee->subproject_id = (int) $subproject_id;
             $subprojectEmployee->assigned_date = Carbon::now();
             $subprojectEmployee->created_at = Carbon::now();
             $subprojectEmployee->updated_at = Carbon::now();
@@ -175,7 +176,7 @@ class SubprojectEmployeesController extends Controller
             ]);
 
             $data = [
-                'subproject_id'    => $request->get('subproject_id'),
+                'subproject_id'    => (int) $request->get('subproject_id'),
                 'assigned_date'    => Carbon::now()
             ];
 
@@ -199,10 +200,10 @@ class SubprojectEmployeesController extends Controller
     public function destroy(Request $request, $id) {
         try{
             $subprojectEmployee = app(SubprojectEmployees::class)->findOrFail($id);
-
-            if ($project->delete()) {
+            if ($subprojectEmployee->delete()) {
                 return $this->sendResponse(['is_deleted' => true], "Subproject Employee deleted");
             }
+            throw new \Exception("Internal server error");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
