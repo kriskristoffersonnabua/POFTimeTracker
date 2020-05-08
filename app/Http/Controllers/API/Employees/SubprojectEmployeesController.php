@@ -138,37 +138,6 @@ class SubprojectEmployeesController extends Controller
         }
     }
 
-    public function store(Request $request) {
-        try {
-            $request->validate([
-                'emp_user_id' => 'required',
-                'subproject_id' => 'required'
-            ]);
-            
-            $emp_user_id = $request->get('emp_user_id');
-            $subproject_id = $request->get('subproject_id');
-
-            $subprojectEmployee = new SubprojectEmployees;
-            $subprojectEmployee->emp_user_id = (int) $emp_user_id;
-            $subprojectEmployee->subproject_id = (int) $subproject_id;
-            $subprojectEmployee->assigned_date = Carbon::now();
-            $subprojectEmployee->created_at = Carbon::now();
-            $subprojectEmployee->updated_at = Carbon::now();
-            $subprojectEmployee->save();
-
-            return $this->sendResponse($subprojectEmployee->toArray(), "Subproject Employee created.") ;
-        } catch (\Exception $e) {
-            $errorCode = $e->getCode();
-
-            return $this->sendError(
-                'Subproject Employee could not be created',
-                ['error'=> $e->getMessage()],
-                $errorCode && $errorCode <= 500 ?
-                    $errorCode: 500
-            );
-        }
-    }
-
     public function update(Request $request, $id) {
         try {
             $request->validate([
@@ -190,25 +159,6 @@ class SubprojectEmployeesController extends Controller
 
             return $this->sendError(
                 'Subproject Employee could not be updated',
-                ['error'=> $e->getMessage()],
-                $errorCode && $errorCode <= 500 ?
-                    $errorCode: 500
-            );
-        }
-    }
-
-    public function destroy(Request $request, $id) {
-        try{
-            $subprojectEmployee = app(SubprojectEmployees::class)->findOrFail($id);
-            if ($subprojectEmployee->delete()) {
-                return $this->sendResponse(['is_deleted' => true], "Subproject Employee deleted");
-            }
-            throw new \Exception("Internal server error");
-        } catch (\Exception $e) {
-            $errorCode = $e->getCode();
-
-            return $this->sendError(
-                'Subproject Employee could not be deleted',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
