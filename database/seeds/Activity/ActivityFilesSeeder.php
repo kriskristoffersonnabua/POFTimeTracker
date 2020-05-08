@@ -21,7 +21,7 @@ class ActivityFilesSeeder extends Seeder
         //$this->disableForeignKeys();
         $this->truncate('activity_files');
 
-        $users = [
+        $activity_files = [
             [
                 'activity_id'   =>  1,
                 'file'          =>  'samplefile',
@@ -36,7 +36,7 @@ class ActivityFilesSeeder extends Seeder
             ]
         ];
 
-        DB::table('activity_files')->insert($users);
+        DB::table('activity_files')->insert($activity_files);
 
         //$this->enableForeignKeys();
     }

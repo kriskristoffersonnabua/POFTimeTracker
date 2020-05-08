@@ -23,7 +23,7 @@ class ActivitiesSeeder extends Seeder
         $activities = [
             [
                 'id'                        =>  1,
-                'subproject_id'             =>  2,
+                'subproject_id'             =>  1,
                 'activity_no'               =>  7,
                 'title'                     =>  'Sample title',
                 'description'               =>  'Sample description',
@@ -34,7 +34,7 @@ class ActivitiesSeeder extends Seeder
             ],
             [
                 'id'                        =>  2,
-                'subproject_id'             =>  3,
+                'subproject_id'             =>  1,
                 'activity_no'               =>  8,
                 'title'                     =>  'Sample title',
                 'description'               =>  'Sample description',

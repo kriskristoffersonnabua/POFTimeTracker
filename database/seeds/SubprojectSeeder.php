@@ -12,7 +12,7 @@ class SubprojectSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('subproject')->insert([
+        DB::table('subprojects_employees')->insert([
             [
                 'id'              => 1,
                 'emp_user_id'     => 3,
