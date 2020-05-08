@@ -33,7 +33,21 @@ Route::middleware('auth:api')->group(function () {
         Route::group(['prefix' => '/activity-files'], function () {
             Route::get('/', 'API\Activities\ActivityFilesController@index');
         });
+    });        
+    
+    Route::group(['prefix' => '/subprojects'], function () {
+        Route::post('/assign-employee', 'API\Employees\SubprojectEmployeesController@assignBatchEmployees');
+        Route::post('/unassign-employee', 'API\Employees\SubprojectEmployeesController@unassignSubprojectEmployee');
+        Route::get('/employees', 'API\Employees\SubprojectEmployeesController@index');
+        Route::get('/employees/count', 'API\Employees\SubprojectEmployeesController@count');
+        Route::post('/employees', 'API\Employees\SubprojectEmployeesController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'API\Employees\SubprojectEmployeesController@show');
+            Route::patch('/', 'API\Employees\SubprojectEmployeesController@update');
+            Route::delete('/', 'API\Employees\SubprojectEmployeesController@destroy');
+        });
     });
+
 });
 
 Route::post('/login', 'Auth\APILoginController@login');
