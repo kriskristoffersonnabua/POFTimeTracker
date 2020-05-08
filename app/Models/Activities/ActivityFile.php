@@ -4,7 +4,7 @@ namespace App\Models\Activities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AcitivityFile extends Model
+class ActivityFile extends Model
 {
 
     /**
