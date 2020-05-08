@@ -79,13 +79,6 @@
                 </div>
             </div>
         </div>
-
-        <!---- Modals ---->
-        <div class="modal fade view-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.view-modal')
-        </div>
-
-        <!---- End of Modals ---->
         </div>
     </div>
 </div>

@@ -35,7 +35,7 @@
               <div class="col-md-12" style="text-align: center">
                 <div class="x_panel" style="width: 90%;">
                     <div class="x_title">
-                        <h2>Sub Projects</h2>
+                        <h2>Activities</h2>
                         
                         <div class="title_right">
                             <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search">

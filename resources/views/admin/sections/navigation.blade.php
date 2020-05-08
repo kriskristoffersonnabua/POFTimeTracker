@@ -61,7 +61,7 @@
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.reports') }}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.report') }}
                         </a>

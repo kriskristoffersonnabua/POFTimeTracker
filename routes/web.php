@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/subprojects', 'SubProjectController@index')->name('subprojects');
     Route::get('/activities', 'ActivitiesController@index')->name('activities');
     Route::get('/employees', 'EmployeesController@index')->name('employees');
+    Route::get('/reports', 'ReportsController@index')->name('reports');
 
     //Users
     Route::get('users', 'UserController@index')->name('users');
