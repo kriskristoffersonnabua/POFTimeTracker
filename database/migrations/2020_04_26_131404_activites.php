@@ -22,7 +22,7 @@ class Activites extends Migration
 
             $table->string('title')->nullable()->default('');
             $table->string('description')->nullable()->default('');
-            $table->string('acceptance criteria')->nullable()->default('');
+            $table->string('acceptance_criteria')->nullable()->default('');
             $table->float('estimated_hours',8,2)->nullable()->default(0);
             $table->timestamps();
 
