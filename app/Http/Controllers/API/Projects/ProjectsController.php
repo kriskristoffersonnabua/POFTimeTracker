@@ -76,14 +76,10 @@ class ProjectsController extends Controller
     }
 
     public function update(Request $request, $id) {
-        $data = [
-            'project_no'    => $request->get('project_no'),
-            'name'          => $request->get('name'),
-            'description'   => $request->get('description')
-        ];
+        $data = $request->all();
 
         $project = app(Projects::class)->findOrFail($id);
-        $project->fill($data);
+        $project->update($data);
         $project->save();
         
         return $this->responseInJson($project);

@@ -4,12 +4,12 @@ use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Api Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
+| Here is where you can register Api routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| is assigned the "Api" middleware group. Enjoy building your API!
 |
 */
 
@@ -19,14 +19,46 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::group(['prefix' => '/projects'], function () {
-        Route::get('/', 'API\Projects\ProjectsController@index');
-        Route::get('/count', 'API\Projects\ProjectsController@count');
-        Route::post('/', 'API\Projects\ProjectsController@store');
+        Route::get('/', 'Api\Projects\ProjectsController@index');
+        Route::get('/count', 'Api\Projects\ProjectsController@count');
+        Route::post('/', 'Api\Projects\ProjectsController@store');
         Route::group(['prefix' => '/{id}'], function () {
-            Route::get('/', 'API\Projects\ProjectsController@show');
-            Route::patch('/', 'API\Projects\ProjectsController@update');
-            Route::delete('/', 'API\Projects\ProjectsController@destroy');
+            Route::get('/', 'Api\Projects\ProjectsController@show');
+            Route::patch('/', 'Api\Projects\ProjectsController@update');
+            Route::delete('/', 'Api\Projects\ProjectsController@destroy');
         });
+    });
+
+    Route::group(['prefix' => '/subprojects'], function () {
+        Route::get('/', 'Api\Projects\SubProjectsController@index');
+        Route::post('/', 'Api\Projects\SubProjectsController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'Api\Projects\SubProjectsController@show');
+            Route::patch('/', 'Api\Projects\SubProjectsController@update');
+            Route::delete('/', 'Api\Projects\SubProjectsController@delete');
+        });
+    });
+
+    Route::group(['prefix' => '/activity'], function () {
+        Route::get('/', 'Api\Activity\ActivityController@index');
+        Route::post('/', 'Api\Activity\ActivityController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'Api\Activity\ActivityController@show');
+            Route::patch('/', 'Api\Activity\ActivityController@update');
+            Route::delete('/', 'Api\Activity\ActivityController@delete');
+
+            Route::post('/add-tba', 'Api\Activity\ActivityTBASController@store');
+            Route::get('/get-tba', 'Api\Activity\ActivityTBASController@index');
+
+            Route::post('/add-comment', 'Api\Activity\ActivityCommentsController@store');
+            Route::get('/get-comments', 'Api\Activity\ActivityCommentsController@index');
+        });
+
+        Route::delete('/remove-tba/{atba_id}', 'Api\Activity\ActivityTBASController@delete');
+        Route::patch('/update-tba/{atba_id}', 'Api\Activity\ActivityTBASController@update');
+
+        Route::delete('/remove-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@delete');
+        Route::patch('/update-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@update');
     });
 
     Route::group(['prefix' => '/time-history'], function () {
@@ -41,4 +73,4 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
-Route::post('/login', 'Auth\APILoginController@login');
+Route::post('/login', 'Auth\ApiLoginController@login');

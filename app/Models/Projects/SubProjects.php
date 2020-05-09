@@ -3,6 +3,7 @@
 namespace App\Models\Projects;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Activity\Activity;
 
 class SubProjects extends Model
 {
@@ -20,4 +21,19 @@ class SubProjects extends Model
      * @var string
      */
     protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'subproject_no',
+        'subproject_name', 
+        'description'
+    ];
+
+    public function activities() {
+
+        return $this->hasMany(
+            Activity::class,
+            'subproject_id',
+            'id'
+        );
+    }
 }
