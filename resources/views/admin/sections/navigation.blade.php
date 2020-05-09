@@ -11,10 +11,10 @@
         <!-- menu profile quick info -->
         <div class="profile clearfix">
             <div class="profile_pic">
-                <img src="{{ auth()->user()->avatar }}" alt="..." class="img-circle profile_img">
+                <img src="{{ asset('logo.png') }}" alt="..." class="img-circle profile_img">
             </div>
             <div class="profile_info">
-                <h2>{{ auth()->user()->name }}</h2>
+                <h2>{{ auth()->user()->first_name }}</h2>
             </div>
         </div>
         <!-- /menu profile quick info -->
@@ -26,42 +26,44 @@
             <div class="menu_section">
                 <ul class="nav side-menu">
                     <li>
-                        <a href="{{ route('admin.dashboard') }}">
+                        <a href="{{ route('dashboard') }}">
                             <i class="fa fa-home" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.dashboard') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.projects') }}">
+                        <a href="{{ route('projects') }}">
                             <i class="fa fa-book" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.projects') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.subprojects') }}">
+                        <a href="{{ route('subprojects') }}">
                             <i class="fa fa-tasks" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.sub_projects') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.activities') }}">
+                        <a href="{{ route('activities') }}">
                             <i class="fa fa-folder-open" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.activities') }}
                         </a>
                     </li>
-
+                    
+                    @if(auth()->user()->hasRole('administrator'))
                     <li>
-                        <a href="{{ route('admin.employees') }}">
+                        <a href="{{ route('employees') }}">
                             <i class="fa fa-users" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.employees') }}
                         </a>
                     </li>
+                    @endif
 
                     <li>
-                        <a href="{{ route('admin.reports') }}">
+                        <a href="{{ route('reports') }}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.report') }}
                         </a>
