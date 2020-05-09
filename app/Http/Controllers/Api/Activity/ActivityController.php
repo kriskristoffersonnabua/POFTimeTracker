@@ -13,7 +13,7 @@ class ActivityController extends Controller
 {
     use ApiHelper;
 
-    public function get(Request $request)
+    public function index(Request $request)
     {
         try {
             $params = $request->all();
@@ -42,7 +42,7 @@ class ActivityController extends Controller
             if (isset($activity_query)) {
                 return $this->sendResponse($activity_query->get()->toArray(), "Activity fetched.");
             } else {
-                throw new Exception("No Activity found.", 404);
+                throw new \Exception("No Activity found.", 404);
             }
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
@@ -50,6 +50,28 @@ class ActivityController extends Controller
             return $this->sendError(
                 'Activity could not be fetched',
                 ['error'=>'query filters not supported'],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+
+    public function show(Request $request, $activity_id)
+    {
+        try {
+            $activity = Activity::find($activity_id);
+
+            if (!isset($activity)) {
+                throw new \Exception('Activity not found');
+            }
+
+            return $this->sendResponse($activity->toArray(), "Activity found");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Activity could not be fetched',
+                [ 'error' => 'Activity could not be found with that id' ],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
             );
@@ -119,7 +141,12 @@ class ActivityController extends Controller
     {
         try {
             $activity = Activity::find($activity_id);
-            $activity->delete($params);
+
+            if (!isset($activity)) {
+                throw new \Exception('Activity not found');
+            }
+
+            $activity->delete();
 
             return $this->sendResponse(['is_deleted' => true],"Activity deleted");
         } catch (\Exception $e) {

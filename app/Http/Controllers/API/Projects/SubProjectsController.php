@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Http\Controllers\API\Projects;
 
 use App\Models\Projects\SubProjects;
 use Carbon\Carbon;
@@ -7,13 +8,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\ApiHelper;
 
-class SubProjects extends Controller
+class SubProjectsController extends Controller
 {
     use ApiHelper;
     const DEFAULT_OFFSET = 0;
     const DEFAULT_LIMIT = 10;
 
-    public function index()
+    public function index(Request $request)
     {
         try {
             $params = $request->all();
@@ -55,7 +56,7 @@ class SubProjects extends Controller
 
             return $this->sendError(
                 'Subproject/s could not be fetched',
-                [ 'error' => 'query filters not supported' ],
+                [ 'error' => $e->getMessage() ],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
             );
@@ -65,7 +66,7 @@ class SubProjects extends Controller
     public function show(Request $request, $subproject_id)
     {
         try {
-            $subproject = Subproject::find($subproject_id);
+            $subproject = SubProjects::find($subproject_id);
 
             if (!isset($subproject)) {
                 throw new \Exception('Subproject not found', 404);
@@ -88,16 +89,16 @@ class SubProjects extends Controller
     {
         try {
             $request->validate([
-                project_id => 'required',
-                subproject_no => 'required',
-                subproject_name => 'required',
-                user_id => 'required',
-                description => 'required'
+                "project_id" => 'required',
+                "subproject_no" => 'required',
+                "subproject_name" => 'required',
+                "user_id" => 'required',
+                "description" => 'required'
             ]);
             $params = $request->all();
 
-            $new_subproject = new Subproject;
-            $new_subproject->project_id = $params['project_id'];
+            $new_subproject = new SubProjects;
+            $new_subproject->project_id = (int)$params['project_id'];
             $new_subproject->subproject_no = $params['subproject_no'];
             $new_subproject->subproject_name = $params['subproject_name'];
             $new_subproject->user_id = $params['user_id'];
@@ -121,18 +122,15 @@ class SubProjects extends Controller
     public function update(Request $request, $subproject_id)
     {
         try {
-            $request->validate([
-                project_id => 'required',
-                subproject_no => 'required',
-                subproject_name => 'required',
-                user_id => 'required',
-                description => 'required'
-            ]);
             $params = $request->all();
 
-            $subproject = Subproject::find($subproject_id);
-            $subproject->update($params);
+            $subproject = SubProjects::find($subproject_id);
 
+            if (!isset($subproject)) {
+                throw new \Exception("Subproject not existing", 404);
+            }
+
+            $subproject->update($params);
             $subproject->save();
 
             return $this->sendResponse($subproject->toArray(), "Subproject updated");
@@ -151,7 +149,11 @@ class SubProjects extends Controller
     public function delete($subproject_id)
     {
         try {
-            $subproject = Subproject::find($subproject_id);
+            $subproject = SubProjects::find($subproject_id);
+
+            if (!isset($subproject)) {
+                throw new \Exception("Subproject not existing", 404);
+            }
             $subproject->delete();
 
             return $this->sendResponse(['is_deleted' => true], "Subproject deleted");
@@ -159,7 +161,7 @@ class SubProjects extends Controller
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Subproject could not be updated',
+                'Subproject could not be deleted',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
