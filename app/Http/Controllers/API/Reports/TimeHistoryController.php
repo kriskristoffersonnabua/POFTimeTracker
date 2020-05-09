@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\API\Projects;
+namespace App\Http\Controllers\API\Reports;
 
-use App\Traits\DataConverterHelper;
-use App\Models\Projects\Projects;
 use App\Http\Controllers\Controller;
+use App\Models\Reports\TimeHistory;
+use App\Traits\ApiHelper;
+use App\Traits\DataConverterHelper;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use lluminate\Routing\ResponseFactory;
-use App\Traits\ApiHelper;
 
-class ProjectsController extends Controller
+class TimeHistoryController extends Controller
 {
     use ApiHelper, DataConverterHelper;
-
     const DEFAULT_OFFSET = 0;
     const DEFAULT_LIMIT = 10; 
 
@@ -22,9 +21,11 @@ class ProjectsController extends Controller
         try {
             $filters = [
                 'id'            => $this->convertCommaSeparated($request->get('id')),
-                'created_at'    => $this->convertDateRange($request->get('created_at')),
-                'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'user_id'       => $this->convertCommaSeparated($request->get('user_id')),
+                'activity_id'   => $this->convertCommaSeparated($request->get('activity_id')),
+                'date'          => $this->convertDateRange($request->get('date')),
+                'time_start'    => $this->convertDate($request->get('time_start')),
+                'time_end'      => $this->convertDate($request->get('time_end'))
             ];
             $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
             $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
@@ -37,12 +38,12 @@ class ProjectsController extends Controller
             $query = $query->offset($offset);
             $query = $query->limit($limit);
 
-            return $this->sendResponse(['projects' => $query->get()->toArray(), 'count' => $count], "Project/s fetched.");
+            return $this->sendResponse(['time_history' => $query->get()->toArray(), 'count' => $count], "Time Histories fetched.");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Project/s could not be fetched',
+                'Time histories could not be fetched',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
@@ -54,20 +55,22 @@ class ProjectsController extends Controller
         try {
             $filters = [
                 'id'            => $this->convertCommaSeparated($request->get('id')),
-                'created_at'    => $this->convertDateRange($request->get('created_at')),
-                'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'user_id'       => $this->convertCommaSeparated($request->get('user_id')),
+                'activity_id'   => $this->convertCommaSeparated($request->get('activity_id')),
+                'date'          => $this->convertDateRange($request->get('date')),
+                'time_start'    => Carbon::parse($request->get('time_start'))->toTimeString(),
+                'time_end'      => Carbon::parse($request->get('time_end'))->toTimeString()
             ];
-
+    
             $filters = array_remove_null($filters);
             $query = $this->buildQuery($filters);
 
-            return $this->sendResponse(['count' => $query->count()], "Count of project/s fetched.");
+            return $this->sendResponse(['count' => $query->count()], "Time Histories count fetched.");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Projects count could not be fetched',
+                'Time Histories count could not be fetched',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
@@ -77,14 +80,14 @@ class ProjectsController extends Controller
 
     public function show(Request $request, $id) {
         try {
-            $project = app(Projects::class)->findOrFail($id);
+            $timeHistory = app(TimeHistory::class)->findOrFail($id);
 
-            return $this->sendResponse($project->toArray(), "Project found.") ;
+            return $this->sendResponse($timeHistory->toArray(), "Time History found.") ;
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Project could not be fetched',
+                'Time History could not be fetched',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
@@ -95,54 +98,34 @@ class ProjectsController extends Controller
     public function store(Request $request) {
         try {
             $request->validate([
-                'project_no' => 'required',
-                'name' => 'required',
-                'description' => 'required'
+                'user_id' => 'required',
+                'activity_id' => 'required',
+                'date' => 'required',
+                'time_start' => 'required'
             ]);
-            
-            $project_no = $request->get('project_no');
-            $name = $request->get('name');
-            $description = $request->get('description');
 
-            $project = new Projects;
-            $project->project_no = $project_no;
-            $project->name = $name;
-            $project->description = $description;
-            $project->created_at = Carbon::now();
-            $project->updated_at = Carbon::now();
-            $project->save();
+            $user_id = $request->get('user_id');
+            $activity_id = $request->get('activity_id');
+            $date = $request->get('date');
+            $time_start = $request->get('time_start');
+            $time_end = $request->get('time_end');
 
-            return $this->sendResponse($project->toArray(), "Project created.") ;
+            $timeHistory = new TimeHistory;
+            $timeHistory->user_id = $user_id;
+            $timeHistory->activity_id = $activity_id;
+            $timeHistory->date = $date;
+            $timeHistory->time_start = $time_start;
+            $timeHistory->time_end = $time_end;
+            $timeHistory->created_at = Carbon::now();
+            $timeHistory->updated_at = Carbon::now();
+            $timeHistory->save();
+
+            return $this->sendResponse($timeHistory->toArray(), "Time history created.") ;
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Project could not be created',
-                ['error'=> $e->getMessage()],
-                $errorCode && $errorCode <= 500 ?
-                    $errorCode: 500
-            );
-        }
-    }
-
-    public function update(Request $request, $id) {
-        try {
-            $data = [
-                'project_no'    => $request->get('project_no'),
-                'name'          => $request->get('name'),
-                'description'   => $request->get('description')
-            ];
-
-            $project = app(Projects::class)->findOrFail($id);
-            $project->update($data);
-            $project->save();
-            
-            return $this->sendResponse($project->toArray(), "Project updated.") ;
-        } catch (\Exception $e) {
-            $errorCode = $e->getCode();
-
-            return $this->sendError(
-                'Project could not be updated',
+                'Time history could not be created',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
@@ -152,19 +135,46 @@ class ProjectsController extends Controller
 
     public function destroy(Request $request, $id) {
         try{
-            $project = app(Projects::class)->findOrFail($id);
-
-            if (!$project->subprojects()->exists()) {
-                $project = $project->delete();
-                if ($project) {
-                    return $this->sendResponse(['is_deleted' => true], "Project deleted");
-                }
+            $timeHistory = app(TimeHistory::class)->findOrFail($id);
+            if ($timeHistory->delete()) {
+                return $this->sendResponse(['is_deleted' => true], "Time History deleted");
             }
+            throw new \Exception("Internal server error");
+
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 
             return $this->sendError(
-                'Project could not be deleted',
+                'Time History could not be deleted',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+    
+    public function update(Request $request, $id) {
+        try {
+
+            $data = [
+                'user_id'           => $request->get('user_id'),
+                'activity_id'       => $request->get('activity_id'),
+                'date'              => $request->get('date'),
+                'time_start'        => $request->get('time_start'),
+                'time_end'          => $request->get('time_end'),
+                'time_consumed'     => $request->get('time_consumed')
+            ];
+
+            $timeHistory = app(TimeHistory::class)->findOrFail($id);
+            $timeHistory->fill(array_remove_null($data));
+            $timeHistory->save();
+
+            return $this->sendResponse($timeHistory->toArray(), "Time History updated.") ;
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Time History could not be updated',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
@@ -173,9 +183,8 @@ class ProjectsController extends Controller
     }
 
     protected function buildQuery($filters) {        
-        $dateFields = ['created_at', 'updated_at'];
-
-        $query = app(Projects::class);
+        $dateFields = ['date', 'time_start', 'time_end'];
+        $query = app(TimeHistory::class);
         foreach ($filters as $key => $value) {
             if (in_array($key, $dateFields)) {
                 if (count($value) == 1) {
@@ -200,4 +209,3 @@ class ProjectsController extends Controller
         return $query;
     }
 }
-
