@@ -84,4 +84,4 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
-Route::post('/login', 'Auth\ApiLoginController@login');
+Route::post('/login', 'Auth\APILoginController@login');
