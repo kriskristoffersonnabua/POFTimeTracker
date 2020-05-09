@@ -10,3 +10,8 @@
 
 # POF Timetracker Project
 - composer install
+- composer dump-autoload
+- php artisan migrate:fresh --seed
+- php artisan passport:install
+- npm install && npm run dev
+- php artisan serve (or serve using valet --see laravel docs how to setup valet)
