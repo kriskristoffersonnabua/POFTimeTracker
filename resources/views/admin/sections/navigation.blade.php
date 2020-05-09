@@ -33,35 +33,35 @@
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.projects') }}">
                             <i class="fa fa-book" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.projects') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.subprojects') }}">
                             <i class="fa fa-tasks" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.sub_projects') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.activities') }}">
                             <i class="fa fa-folder-open" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.activities') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.employees') }}">
                             <i class="fa fa-users" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.employees') }}
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.reports') }}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             {{ __('views.backend.section.navigation.report') }}
                         </a>
