@@ -24,13 +24,13 @@ class ActivityFilesSeeder extends Seeder
         $activity_files = [
             [
                 'activity_id'   =>  1,
-                'file'          =>  'samplefile',
+                'file'          =>  null,
                 'file_link'     =>  'samplelink',
                 'date_added'    =>  date("Y-m-d H:i:s")
             ],
             [
                 'activity_id'   =>  2,
-                'file'          =>  'samplefile',
+                'file'          =>  null,
                 'file_link'     =>  'samplelink',
                 'date_added'    =>  date("Y-m-d H:i:s")
             ]

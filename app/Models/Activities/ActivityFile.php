@@ -20,4 +20,11 @@ class ActivityFile extends Model
      * @var string
      */
     protected $primaryKey = 'id';
+
+    /**
+     * Fillable Fields
+     *
+     * @var string
+     */
+    protected $fillable = ['activity_id', 'file', 'file_link'];
 }
