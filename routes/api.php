@@ -60,6 +60,17 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/remove-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@delete');
         Route::patch('/update-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@update');
     });
+
+    Route::group(['prefix' => '/time-history'], function () {
+        Route::get('/', 'API\Reports\TimeHistoryController@index');
+        Route::get('/count', 'API\Reports\TimeHistoryController@count');
+        Route::post('/', 'API\Reports\TimeHistoryController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'API\Reports\TimeHistoryController@show');
+            Route::patch('/', 'API\Reports\TimeHistoryController@update');
+            Route::delete('/', 'API\Reports\TimeHistoryController@destroy');
+        });
+    });
 });
 
 Route::post('/login', 'Auth\ApiLoginController@login');
