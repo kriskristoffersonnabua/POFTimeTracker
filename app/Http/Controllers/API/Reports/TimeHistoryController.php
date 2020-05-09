@@ -135,7 +135,7 @@ class TimeHistoryController extends Controller
 
     public function destroy(Request $request, $id) {
         try{
-            $timeHistory = app(Projects::class)->findOrFail($id);
+            $timeHistory = app(TimeHistory::class)->findOrFail($id);
             if ($timeHistory->delete()) {
                 return $this->sendResponse(['is_deleted' => true], "Time History deleted");
             }
@@ -164,7 +164,7 @@ class TimeHistoryController extends Controller
                 'time_end'          => $request->get('time_end'),
                 'time_consumed'     => $request->get('time_consumed')
             ];
-            
+
             $timeHistory = app(TimeHistory::class)->findOrFail($id);
             $timeHistory->fill(array_remove_null($data));
             $timeHistory->save();
