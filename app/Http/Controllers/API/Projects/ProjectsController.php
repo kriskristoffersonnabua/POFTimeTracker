@@ -9,92 +9,167 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use lluminate\Routing\ResponseFactory;
+use App\Traits\ApiHelper;
 
 class ProjectsController extends Controller
 {
-    use DataConverterHelper;
+    use ApiHelper, DataConverterHelper;
+
     const DEFAULT_OFFSET = 0;
     const DEFAULT_LIMIT = 10; 
 
     public function index(Request $request) {
-        $filters = [
-            'id'            => $this->convertCommaSeparated($request->get('id')),
-            'created_at'    => $this->convertDateRange($request->get('created_at')),
-            'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-            'project_no'    => $request->get('project_no')
-        ];
-        $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
-        $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
+        try {
+            $filters = [
+                'id'            => $this->convertCommaSeparated($request->get('id')),
+                'created_at'    => $this->convertDateRange($request->get('created_at')),
+                'updated_at'    => $this->convertDateRange($request->get('updated_at')),
+                'project_no'    => $request->get('project_no')
+            ];
+            $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
+            $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
 
-        $filters = array_remove_null($filters);
-        $query = $this->buildQuery($filters);
+            $filters = array_remove_null($filters);
+            $query = $this->buildQuery($filters);
 
-        $count = $query->count();
+            $count = $query->count();
 
-        $query = $query->offset($offset);
-        $query = $query->limit($limit);
+            $query = $query->offset($offset);
+            $query = $query->limit($limit);
 
-        return $this->responseInJson(['projects' => $query->get()->toArray(), 'count' => $count]);
+            return $this->sendResponse(['projects' => $query->get()->toArray(), 'count' => $count], "Project/s fetched.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Project/s could not be fetched',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
     }
 
     public function count(Request $request) {
-        $dateFields = ['created_at', 'updated_at'];
+        try {
+            $filters = [
+                'id'            => $this->convertCommaSeparated($request->get('id')),
+                'created_at'    => $this->convertDateRange($request->get('created_at')),
+                'updated_at'    => $this->convertDateRange($request->get('updated_at')),
+                'project_no'    => $request->get('project_no')
+            ];
 
-        $filters = [
-            'id'            => $this->convertCommaSeparated($request->get('id')),
-            'created_at'    => $this->convertDateRange($request->get('created_at')),
-            'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-            'project_no'    => $request->get('project_no')
-        ];
+            $filters = array_remove_null($filters);
+            $query = $this->buildQuery($filters);
 
-        $filters = array_remove_null($filters);
-        $query = $this->buildQuery($filters);
+            return $this->sendResponse(['count' => $query->count()], "Count of project/s fetched.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
 
-        return $this->responseInJson(['count' => $query->count()]);
+            return $this->sendError(
+                'Projects count could not be fetched',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
     }
 
     public function show(Request $request, $id) {
-        $project = app(Projects::class)->findOrFail($id);
+        try {
+            $project = app(Projects::class)->findOrFail($id);
 
-        return $this->responseInJson($project);
+            return $this->sendResponse($project->toArray(), "Project found.") ;
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Project could not be fetched',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
     }
 
     public function store(Request $request) {
-        $project_no = $request->get('project_no');
-        $name = $request->get('name');
-        $description = $request->get('description');
+        try {
+            $request->validate([
+                'project_no' => 'required',
+                'name' => 'required',
+                'description' => 'required'
+            ]);
+            
+            $project_no = $request->get('project_no');
+            $name = $request->get('name');
+            $description = $request->get('description');
 
-        $project = new Projects;
-        $project->project_no = $project_no;
-        $project->name = $name;
-        $project->description = $description;
-        $project->created_at = Carbon::now();
-        $project->updated_at = Carbon::now();
-        $project->save();
+            $project = new Projects;
+            $project->project_no = $project_no;
+            $project->name = $name;
+            $project->description = $description;
+            $project->created_at = Carbon::now();
+            $project->updated_at = Carbon::now();
+            $project->save();
 
-        return $this->responseInJson($project);
+            return $this->sendResponse($project->toArray(), "Project created.") ;
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Project could not be created',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
     }
 
     public function update(Request $request, $id) {
-        $data = $request->all();
+        try {
+            $data = [
+                'project_no'    => $request->get('project_no'),
+                'name'          => $request->get('name'),
+                'description'   => $request->get('description')
+            ];
 
-        $project = app(Projects::class)->findOrFail($id);
-        $project->update($data);
-        $project->save();
-        
-        return $this->responseInJson($project);
+            $project = app(Projects::class)->findOrFail($id);
+            $project->update($data);
+            $project->save();
+            
+            return $this->sendResponse($project->toArray(), "Project updated.") ;
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Project could not be updated',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
     }
 
     public function destroy(Request $request, $id) {
-        $project = app(Projects::class)->findOrFail($id);
+        try{
+            $project = app(Projects::class)->findOrFail($id);
 
-        if (!$project->subprojects()->exists()) {
-            $project = $project->delete();
-            if ($project) {
-                return $this->responseInJson(['is_deleted' => true]);
+            if (!$project->subprojects()->exists()) {
+                $project = $project->delete();
+                if ($project) {
+                    return $this->sendResponse(['is_deleted' => true], "Project deleted");
+                }
             }
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Project could not be deleted',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
         }
-        return $this->responseInJson(['is_deleted' => false]);
     }
 
     protected function buildQuery($filters) {        
