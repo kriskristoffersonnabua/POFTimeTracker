@@ -134,7 +134,7 @@ class ProjectsController extends Controller
             ];
 
             $project = app(Projects::class)->findOrFail($id);
-            $project->fill($data);
+            $project->update($data);
             $project->save();
             
             return $this->sendResponse($project->toArray(), "Project updated.") ;

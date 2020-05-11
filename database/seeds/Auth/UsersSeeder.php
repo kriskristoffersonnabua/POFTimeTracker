@@ -25,7 +25,7 @@ class UsersSeeder extends Seeder
             [
                 'first_name' => 'Employee 1',
                 'last_name' => 'Account',
-                'email' => 'demo1.laravel@labs64.com',
+                'email' => 'demo.laravel@labs641.com',
                 'password' => bcrypt('demo'),
                 'active' => true,
                 'confirmation_code' => \Ramsey\Uuid\Uuid::uuid4(),
@@ -36,7 +36,7 @@ class UsersSeeder extends Seeder
             [
                 'first_name' => 'Employee 2',
                 'last_name' => 'Account',
-                'email' => 'demo2.laravel@labs64.com',
+                'email' => 'demo.laravel@labs642.com',
                 'password' => bcrypt('demo'),
                 'active' => true,
                 'confirmation_code' => \Ramsey\Uuid\Uuid::uuid4(),
@@ -47,7 +47,7 @@ class UsersSeeder extends Seeder
             [
                 'first_name' => 'Employee 3',
                 'last_name' => 'Account',
-                'email' => 'demo3.laravel@labs64.com',
+                'email' => 'demo.laravel@labs643.com',
                 'password' => bcrypt('demo'),
                 'active' => true,
                 'confirmation_code' => \Ramsey\Uuid\Uuid::uuid4(),

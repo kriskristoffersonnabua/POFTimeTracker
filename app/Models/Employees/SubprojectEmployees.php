@@ -12,7 +12,7 @@ class SubprojectEmployees extends Model
      *
      * @var string
      */
-    protected $table = 'subprojects';
+    protected $table = 'subproject_employees';
 
     /**
      * The primary key for the model.

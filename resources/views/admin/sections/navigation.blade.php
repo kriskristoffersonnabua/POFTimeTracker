@@ -24,72 +24,48 @@
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
             <div class="menu_section">
-                <h3>{{ __('views.backend.section.navigation.sub_header_0') }}</h3>
                 <ul class="nav side-menu">
                     <li>
                         <a href="{{ route('admin.dashboard') }}">
                             <i class="fa fa-home" aria-hidden="true"></i>
-                            {{ __('views.backend.section.navigation.menu_0_1') }}
+                            {{ __('views.backend.section.navigation.dashboard') }}
                         </a>
                     </li>
-                </ul>
-            </div>
-            <div class="menu_section">
-                <h3>{{ __('views.backend.section.navigation.sub_header_1') }}</h3>
-                <ul class="nav side-menu">
-                    <li>
-                        <a href="{{ route('admin.users') }}">
-                            <i class="fa fa-users" aria-hidden="true"></i>
-                            {{ __('views.backend.section.navigation.menu_1_1') }}
-                        </a>
-                    </li><li>
-                        <a href="{{ route('admin.users.restore') }}">
-                            <i class="fa fa-users" aria-hidden="true"></i>
-                            {{ __('views.backend.section.navigation.menu_1_3') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.permissions') }}">
-                            <i class="fa fa-key" aria-hidden="true"></i>
-                            {{ __('views.backend.section.navigation.menu_1_2') }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="menu_section">
-                <h3>{{ __('views.backend.section.navigation.sub_header_2') }}</h3>
 
-                <ul class="nav side-menu">
                     <li>
-                        <a>
-                            <i class="fa fa-list"></i>
-                            {{ __('views.backend.section.navigation.menu_2_1') }}
-                            <span class="fa fa-chevron-down"></span>
+                        <a href="{{ route('admin.projects') }}">
+                            <i class="fa fa-book" aria-hidden="true"></i>
+                            {{ __('views.backend.section.navigation.projects') }}
                         </a>
-                        <ul class="nav child_menu">
-                            <li>
-                                <a href="{{ route('log-viewer::dashboard') }}">
-                                    {{ __('views.backend.section.navigation.menu_2_2') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('log-viewer::logs.list') }}">
-                                    {{ __('views.backend.section.navigation.menu_2_3') }}
-                                </a>
-                            </li>
-                        </ul>
                     </li>
-                </ul>
-            </div>
-            <div class="menu_section">
-                <h3>{{ __('views.backend.section.navigation.sub_header_3') }}</h3>
-                <ul class="nav side-menu">
-                  <li>
-                      <a href="http://l64.cc/nlaff/VXZPYHCTC" target="_blank" title="Online Software License Management"><i class="fa fa-external-link" aria-hidden="true"></i>Labs64 NetLicensing</a>
-                  </li>
-                  <li>
-                      <a href="https://github.com/Labs64/GuideChimp/" target="_blank" title="Interactive Guided Product Tours"><i class="fa fa-external-link" aria-hidden="true"></i>GuideChimp</a>
-                  </li>
+
+                    <li>
+                        <a href="{{ route('admin.subprojects') }}">
+                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                            {{ __('views.backend.section.navigation.sub_projects') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.activities') }}">
+                            <i class="fa fa-folder-open" aria-hidden="true"></i>
+                            {{ __('views.backend.section.navigation.activities') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.employees') }}">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            {{ __('views.backend.section.navigation.employees') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.reports') }}">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            {{ __('views.backend.section.navigation.report') }}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
