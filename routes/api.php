@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/', 'API\Activities\ActivityFilesController@index');
             Route::post('/', 'API\Activities\ActivityFilesController@store');
             Route::group(['prefix' => '/{id}'], function () {
+                Route::get('/', 'API\Activities\ActivityFilesController@show');
                 Route::patch('/', 'API\Activities\ActivityFilesController@update');
                 Route::delete('/', 'API\Activities\ActivityFilesController@delete');
             });
