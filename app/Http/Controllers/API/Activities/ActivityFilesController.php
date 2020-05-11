@@ -22,7 +22,7 @@ class ActivityFilesController extends Controller
         try {
             $filters = [
                 'id'    => $this->convertCommaSeparated($request->get('id')),
-                'activity_id'  =>  $this->convertCommaSeparated($request->get('id')),
+                'activity_id'  =>  $this->convertCommaSeparated($request->get('activity_id')),
             ];
             $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
             $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
@@ -77,6 +77,23 @@ class ActivityFilesController extends Controller
             return $this->sendError(
                 'Activity File could not be created',
                 ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+
+    public function show(Request $request, $id) {
+        try {
+            $activity_file = app(ActivityFile::class)->findOrFail($id);
+
+            return $this->sendResponse($activity_file->toArray(), "Activity File found.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Activity File could not be found',
+                ['error' => $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500
             );
