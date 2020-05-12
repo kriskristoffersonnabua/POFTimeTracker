@@ -38,10 +38,14 @@
                         <h2>Activities</h2>
                         
                         <div class="title_right">
-                            <div class="col-md-4 col-sm-4 col-xs-4 form-group pull-right top_search">
+                            <div class="form-group pull-right top_search">
                                 
+                                @if(auth()->user()->hasRole('administrator'))
+                                <div style="padding-left: 30px">
+                                @else
                                 <div class="col-md-8 col-sm-8 col-xs-8" style="padding-left: 30px">
-                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                @endif
+                                    <div class="col-md-4 col-sm-4 col-xs-4">
                                         <label> Sub Projects </label>
                                     </div>
                                     <div class="col-md-8 col-sm-8 col-xs-8">
@@ -53,9 +57,11 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-sm-3 col-xs-3">
-                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target=".add-activity-modal">Add Activity</button>
+                                @if(!auth()->user()->hasRole('administrator'))
+                                <div class="col-md-3 col-sm-3 col-xs-3 pull-right">
+                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target=".activity-form-modal">Add Activity</button>
                                 </div>
+                                @endif
                             </div>
                         <div class="clearfix"></div>
                         </div>
