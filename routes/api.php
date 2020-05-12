@@ -69,7 +69,14 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/', 'API\Reports\TimeHistoryController@show');
             Route::patch('/', 'API\Reports\TimeHistoryController@update');
             Route::delete('/', 'API\Reports\TimeHistoryController@destroy');
+
+            Route::post('/add-screenshot', 'API\Reports\TimeHistoryScreenshotsController@store');
+            Route::get('/get-screenshots', 'API\Reports\TimeHistoryScreenshotsController@index');
+            Route::get('/show-screenshot', 'API\Reports\TimeHistoryScreenshotsController@show');
         });
+
+        Route::patch('/update-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@update');
+        Route::delete('/delete-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@destroy');
     });
 
     Route::group(['prefix' => '/activities'], function() {
