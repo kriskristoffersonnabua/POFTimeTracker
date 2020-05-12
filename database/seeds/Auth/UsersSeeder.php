@@ -23,28 +23,6 @@ class UsersSeeder extends Seeder
 
         $users = [
             [
-                'first_name' => 'Admin',
-                'last_name' => 'Account',
-                'email' => 'admin.laravel@labs64.com',
-                'password' => bcrypt('admin'),
-                'active' => true,
-                'confirmation_code' => \Ramsey\Uuid\Uuid::uuid4(),
-                'confirmed' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'first_name' => 'Demo',
-                'last_name' => 'Account',
-                'email' => 'demo.laravel@labs64.com',
-                'password' => bcrypt('demo'),
-                'active' => true,
-                'confirmation_code' => \Ramsey\Uuid\Uuid::uuid4(),
-                'confirmed' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
                 'first_name' => 'Employee 1',
                 'last_name' => 'Account',
                 'email' => 'demo.laravel@labs641.com',
