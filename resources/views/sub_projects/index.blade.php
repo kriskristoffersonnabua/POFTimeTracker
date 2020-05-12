@@ -96,16 +96,28 @@
                                     so all you need to do to use it with your own tables is to call the construction function:
                                     </td>
                                     <td style="width: 25%">
+                                        @if(auth()->user()->hasRole('administrator'))
                                         <a href="#" class="btn btn-dark btn-sm" data-toggle="modal" data-target=".assign-modal">
                                             <i class="fa fa-check"></i> Assign 
-                                            </a>
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+                                        </a>
+                                        @endif
+                                        <a href="{{ route('activities') }}" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-folder"></i> Activities
+                                        </a>
+                                        @if(auth()->user()->hasRole('administrator'))
                                         <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".add-sub-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
                                         <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
+                                        @endif
+                                        @if(!auth()->user()->hasRole('administrator'))
+                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".details-modal">
+                                            <i class="fa fa-list-alt"></i> Details
+                                        </a>
+                                        @endif
+
                                     </td>
                                 </tr>
                                 @endfor
@@ -130,6 +142,10 @@
 
         <div class="modal fade assign-modal" tabindex="-1" role="dialog" aria-hidden="true">
             @include('modals.assign-modal')
+        </div>
+
+        <div class="modal fade details-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            @include('modals.details-modal')
         </div>
 
         <!---- End of Modals ---->

@@ -78,13 +78,16 @@
                                     so all you need to do to use it with your own tables is to call the construction function:
                                     </td>
                                     <td style="width: 20%">
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+                                        <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+
+                                        @if(auth()->user()->hasRole('administrator'))
                                         <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".add-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
                                         <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
+                                        @endif 
                                     </td>
                                 </tr>
                                 @endfor
