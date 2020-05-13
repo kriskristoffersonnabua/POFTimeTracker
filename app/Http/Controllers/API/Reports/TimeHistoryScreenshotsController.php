@@ -75,7 +75,7 @@ class TimeHistoryScreenshotsController extends Controller
             $screenshot = new Screenshots;
             $screenshot->time_history_id = $data['time_history_id'];
             $screenshot->screenshot = $data['screenshot'];
-            $screenshot->date_added = $data['date_added'];
+            $screenshot->date_added = Carbon::now();
             $screenshot->save();
 
             return $this->sendResponse($screenshot->toArray(), "screenshot created.") ;

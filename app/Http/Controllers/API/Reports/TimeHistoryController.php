@@ -151,10 +151,12 @@ class TimeHistoryController extends Controller
     
     public function update(Request $request, $id) {
         try {
+            $hms = explode(":", $request->get('time_consumed'));
+            $time_consumed = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
 
             $data = [
-                'time_end'          => Carbon::now(),
-                'time_consumed'     => $request->get('time_consumed')
+                'time_end'      => Carbon::now(),
+                'time_consumed' => $time_consumed
             ];
 
             $timeHistory = app(TimeHistory::class)->findOrFail($id);
