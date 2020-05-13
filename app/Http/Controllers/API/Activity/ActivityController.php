@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Activity;
+namespace App\Http\Controllers\API\Activity;
 
 use App\Models\Auth\User\User;
 use App\Models\Activity\Activity;
