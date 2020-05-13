@@ -96,11 +96,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i=0; $i < 20; $i++)
+                                @foreach($activities as $activity)
                                 <tr>
-                                    <td>#</td>
+                                    <td>{{$activity->activity_no}}</td>
                                     <td>
-                                        <a>Pesamakini Backend UI</a>
+                                        <a>{{$activity->title}}</a>
                                     </td>
                                     <td>
                                         Sub Project 101
@@ -134,7 +134,7 @@
                                         @endif
                                     </td>
                                 </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                         </div>
@@ -155,7 +155,7 @@
         </div>
 
         <div class="modal fade activity-form-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.activity-form-modal')
+            @include('modals.activity-form-modal', ['subprojects' => $subprojects])
         </div>
 
         <div class="modal fade assign-activity-modal" tabindex="-1" role="dialog" aria-hidden="true">
