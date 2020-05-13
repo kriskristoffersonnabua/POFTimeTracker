@@ -45,7 +45,7 @@ class SubProjectController extends Controller
      * @param  \App\SubProject  $subProject
      * @return \Illuminate\Http\Response
      */
-    public function show(SubProject $subProject)
+    public function show(Request $request, $id)
     {
         //
     }

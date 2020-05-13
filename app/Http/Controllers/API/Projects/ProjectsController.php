@@ -24,7 +24,8 @@ class ProjectsController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'created_at'    => $this->convertDateRange($request->get('created_at')),
                 'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'project_no'    => $request->get('project_no'),
+                'name'          => $request->get('name'),
             ];
             $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
             $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
@@ -56,7 +57,8 @@ class ProjectsController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'created_at'    => $this->convertDateRange($request->get('created_at')),
                 'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'project_no'    => $request->get('project_no'),
+                'name'          => $request->get('name')
             ];
 
             $filters = array_remove_null($filters);
