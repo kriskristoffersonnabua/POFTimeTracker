@@ -77,13 +77,16 @@
                                     {{ $project->description}}
                                     </td>
                                     <td style="width: 20%">
-                                        <a href="{{url()->action('Admin\SubProjectController@index', ['project_no' => $project->project_no])}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+                                        <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+
+                                        @if(auth()->user()->hasRole('administrator'))
                                         <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" data-description="{{$project->description}}" class="btn btn-info btn-sm updateProject" data-toggle="modal" data-target=".add-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
                                         <a href="{{url()->action('Admin\ProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
+                                        @endif 
                                     </td>
                                 </tr>
                                 @endforeach
@@ -167,7 +170,7 @@
                 url: selected.attr('href'),
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "id":selectedDelete.attr('data-id')
+                    "id":selected.attr('data-id')
                 },
                 success: function (data, status, xhr) {
                     if(data.success)

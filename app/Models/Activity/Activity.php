@@ -14,6 +14,7 @@ class Activity extends Model
         'title',
         'description',
         'acceptance_criteria',
-        'estimated_hours'
+        'estimated_hours',
+        'status'
     ];
 }

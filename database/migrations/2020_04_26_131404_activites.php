@@ -24,6 +24,7 @@ class Activites extends Migration
             $table->string('description')->nullable()->default('');
             $table->string('acceptance_criteria')->nullable()->default('');
             $table->float('estimated_hours',8,2)->nullable()->default(0);
+            $table->enum('status',['to_be_done','ongoing','done','ready_for_testing'])->default('to_be_done');
             $table->timestamps();
 
             $table->foreign('subproject_id', 'foreign_subproject')

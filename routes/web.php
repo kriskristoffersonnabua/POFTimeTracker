@@ -77,8 +77,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('dashboard/registration-chart', 'DashboardController@getRegistrationChartData')->name('dashboard.registration.chart');
 });
 
-
+// Demo Routes for Employees
 Route::get('/', 'HomeController@index');
+Route::get('/', 'Admin\DashboardController@index')->name('dashboard');
+Route::get('/projects', 'Admin\ProjectController@index')->name('projects');
+Route::get('/subprojects', 'Admin\SubProjectController@index')->name('subprojects');
+Route::get('/activities', 'Admin\ActivitiesController@index')->name('activities');
+Route::get('/employees', 'Admin\EmployeesController@index')->name('employees');
+Route::get('/reports', 'Admin\ReportsController@index')->name('reports');
 
 /**
  * Membership

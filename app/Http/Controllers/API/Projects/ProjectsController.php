@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use lluminate\Routing\ResponseFactory;
+use Illuminate\Routing\ResponseFactory;
 use App\Traits\ApiHelper;
 
 class ProjectsController extends Controller
