@@ -39,6 +39,10 @@ class ActivityController extends Controller
                 $activity_query = Activity::where('activity_no', $params['activity_no']);
             }
 
+            if (array_key_exists('status', $params)) {
+                $activity_query = Activity::where('status', $params['status']);
+            }
+
             if (isset($activity_query)) {
                 return $this->sendResponse($activity_query->get()->toArray(), "Activity fetched.");
             } else {
