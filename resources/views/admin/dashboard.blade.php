@@ -44,7 +44,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Daily Time Consumed of Employees</h2>
+                        <h4>Daily Time Consumed of Employees</h4>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -56,7 +56,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Daily Time Consumed of Team Members</h2>
+                        <h4>Daily Time Consumed of Team Members</h4>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -69,7 +69,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Daily Time Consumed of Project</h2>
+                        <h4>Daily Time Consumed of Project</h4>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -85,7 +85,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Monthly Time Consumed per Project</h2>
+                        <h4>Monthly Time Consumed per Project</h4>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -97,7 +97,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Daily Task History for the Day</h2>
+                        <h4>Daily Task History for the Day</h4>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">

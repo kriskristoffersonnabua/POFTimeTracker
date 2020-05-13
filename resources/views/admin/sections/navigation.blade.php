@@ -14,7 +14,10 @@
                 <img src="{{ asset('logo.png') }}" alt="..." class="img-circle profile_img">
             </div>
             <div class="profile_info">
-                <h2>{{ auth()->user()->first_name }}</h2>
+                <br/>
+                <h2>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</h2>
+                <span></span>
+                {{ auth()->user()->hasRole('administrator') ? "ADMINISTRATOR" : "EMPLOYEE" }}
             </div>
         </div>
         <!-- /menu profile quick info -->

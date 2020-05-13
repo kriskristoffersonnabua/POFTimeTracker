@@ -8,7 +8,7 @@
             <div class="animate form login_form">
                 <section class="login_content">
                     {{ Form::open(['route' => 'login']) }}
-                        <h1>{{ __('views.auth.login.header') }}</h1>
+                        <div class="h1"><img src="{{ asset('logo-big.png') }}" width="200px"/></div>
 
                         <div>
                             <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}"
@@ -46,20 +46,6 @@
 
                         <div class="clearfix"></div>
 
-                        <!-- <div class="separator"> -->
-                        <!--     <span>{{ __('views.auth.login.message_0') }}</span> -->
-                        <!--     <div> -->
-                        <!--         <a href="{{ route('social.redirect', ['facebook']) }}" class="btn btn&#45;success btn&#45;facebook"> -->
-                        <!--             <i class="fa fa&#45;facebook"></i> -->
-                        <!--             Facebook -->
-                        <!--         </a> -->
-                        <!--         <a href="{{ route('social.redirect', ['twitter']) }}" class="btn btn&#45;success btn&#45;twitter"> -->
-                        <!--             <i class="fa fa&#45;twitter"></i> -->
-                        <!--             Twitter -->
-                        <!--         </a> -->
-                        <!--     </div> -->
-                        <!-- </div> -->
-
                         @if(config('auth.users.registration'))
                             <div class="separator">
                                 <p class="change_link">{{ __('views.auth.login.message_1') }}
@@ -70,7 +56,6 @@
                                 <br/>
 
                                 <div>
-                                    <div class="h1">{{ config('app.name') }}</div>
                                     <p>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('views.auth.login.copyright') }}</p>
                                 </div>
                             </div>

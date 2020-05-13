@@ -43,7 +43,7 @@ class ProjectController extends Controller
         if ($response->success) {
             $projects = $response->data->projects;
             $count = $response->data->count;
-            $next = str_pad($count + 1,4,"0",STR_PAD_LEFT);
+            $next = str_pad($count + 1,6,"0",STR_PAD_LEFT);
         }
         return view('projects.index', compact(['projects', 'count', 'next']));
     }

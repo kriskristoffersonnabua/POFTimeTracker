@@ -1,24 +1,10 @@
 {
-    "name": "labs64/laravel-boilerplate",
-    "description": "Laravel Boilerplate",
+    "name": "jenelyn/pof-time-tracker",
+    "description": "POFTimeTracker",
     "type": "project",
     "keywords": ["php", "framework", "laravel", "laravel7", "admin", "theme", "starter", "bootstrap", "boilerplate", "docker", "template", "social-login", "nodejs"],
-    "homepage": "https://github.com/Labs64/laravel-boilerplate",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Labs64 GmbH",
-            "email": "info@labs64.com",
-            "homepage": "https://www.labs64.com"
-        }
-    ],
-    "support": {
-        "email": "info@labs64.com",
-        "issues": "https://github.com/Labs64/laravel-boilerplate/issues",
-        "wiki": "https://github.com/Labs64/laravel-boilerplate",
-        "source": "https://github.com/Labs64/laravel-boilerplate",
-        "docs": "https://github.com/Labs64/laravel-boilerplate"
-    },
+    "authors": [],
     "require": {
         "php": ">=7.2.5",
         "albertcht/invisible-recaptcha": "^1.9",
