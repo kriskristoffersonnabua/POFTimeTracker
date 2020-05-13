@@ -15,10 +15,10 @@
                                 <div class="col-md-8 col-sm-8 col-xs-8" style="padding-top: 12px">
                                     <label> Sub Project No.: </label>
                                 </div>
-                                <select class="form-control">
-                                    @for ($i = 1; $i < 10 ; $i++)
-                                    <option> Sub Project {{ $i }}</option>
-                                    @endfor
+                                <select id="subproject" class="form-control">
+                                    @foreach ($subprojects as $subproject)
+                                        <option value="{{$subproject->id}}"> {{ $subproject->subproject_name }} </option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -54,11 +54,8 @@
                                 <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
                                     <label> Title: </label>
                                 </div>
-                                <select class="form-control">
-                                    @for ($i = 1; $i < 10 ; $i++)
-                                    <option> Sub Project {{ $i }}</option>
-                                    @endfor
-                                </select>
+                               <input type="text" class="form-control" style="width: 100%; text-align: right">
+                               </input>
                             </div>
 
                             <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
@@ -97,4 +94,23 @@
         </div>
     </div>
 
+    @push('scripts') 
+        <script>
+           $('#subproject').on('change',function(e){
+                var subproject_id = $(this).val();
+                console.log(subproject_id);
+                $.ajax({
+                    type:'GET',
+                    url:'/api/activity?subproject_id=' + subproject_id,
+                    data:{},
+                    success:function(data) {
+                        var recent_activity = Object.keys(data.data).pop();
+                        console.log(data.data[recent_activity]['activity_no']);
+                    }
+                });
+            });
+        </script>
+    @endpush  
+    
+ 
     

@@ -40,6 +40,11 @@ class SubProjectsController extends Controller
                 $subproject_query = SubProjects::where('project_id', $params['project_id']);
             }
 
+            if (isset($params)) {
+                $subproject_query = SubProjects::all();
+                 return $this->sendResponse($subproject_query->toArray(), "Subproject/s fetched.");
+            }
+
             if (isset($subproject_query)) {
                 $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
                 $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
@@ -49,7 +54,7 @@ class SubProjectsController extends Controller
 
                 return $this->sendResponse($subproject_query->get()->toArray(), "Subproject/s fetched.");
             } else {
-                throw new Exception("No Subproject found.", 404);
+                throw new \Exception("No Subproject found.", 404);
             }
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
