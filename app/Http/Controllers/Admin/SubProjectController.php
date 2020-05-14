@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\SubProject;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Route;
+use Redirect;
 
 class SubProjectController extends Controller
 {
@@ -39,6 +40,7 @@ class SubProjectController extends Controller
         if ($subproject_response->success) {
             $subprojects = $subproject_response->data;
         }
+        // dd($subproject_response);
 
         $project_response = $this->requestAPI('/api/projects', 'GET');
 
@@ -60,19 +62,16 @@ class SubProjectController extends Controller
         $user = $this->getAuthenticatedUser($request);
 
         $params = [
-            'project_id'    => $request->get('project_id'),
-            'subproject_no' => $request->get('project_no'),
-            'name'          => $request->get('name'),
-            'description'   => $request->get('description')
+            'user_id'         => $user->id,
+            'project_id'      => $request->get('project_id'),
+            'subproject_no'   => $request->get('subproject_no'),
+            'subproject_name' => $request->get('subproject_name'),
+            'description'     => $request->get('description'),
         ];
 
-        $request = Request::create('/api/subprojects', 'POST', array_merge([
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ], $params));
+        $response = $this->requestAPI('/api/subprojects', 'POST', $params);
+        //dd($response);
 
-        Route::dispatch($request);
         return Redirect::action('Admin\SubProjectController@index',['project_id' => $request->get('project_id')]);
     }
 

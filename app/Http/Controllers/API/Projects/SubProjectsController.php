@@ -98,7 +98,6 @@ class SubProjectsController extends Controller
                 "project_id" => 'required',
                 "subproject_no" => 'required',
                 "subproject_name" => 'required',
-                "user_id" => 'required',
                 "description" => 'required'
             ]);
             $params = $request->all();
@@ -107,7 +106,7 @@ class SubProjectsController extends Controller
             $new_subproject->project_id = (int)$params['project_id'];
             $new_subproject->subproject_no = $params['subproject_no'];
             $new_subproject->subproject_name = $params['subproject_name'];
-            $new_subproject->user_id = $params['user_id'];
+            $new_subproject->user_id = 0;
             $new_subproject->description = $params['description'];
 
             $new_subproject->save();
@@ -115,7 +114,6 @@ class SubProjectsController extends Controller
             return $this->sendResponse($new_subproject->toArray(), "Subproject created");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
-
             return $this->sendError(
                 'Subproject could not be created',
                 ['error'=> $e->getMessage()],
