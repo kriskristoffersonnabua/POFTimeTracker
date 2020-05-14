@@ -33,7 +33,7 @@ class TimeHistorySeeder extends Seeder
             ],
             [
                 'user_id'             =>  4,
-                'activity_id'         =>  1,
+                'activity_id'         =>  2,
                 'date'                =>  'Sample title',
                 'time_start'          =>  '2020-04-05 10:11:11',
                 'time_end'            =>  '2020-04-05 11:11:11',
