@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Reports;
+use App\Models\Auth\Role\Role;
+use App\Models\Auth\User\User;
 use Illuminate\Http\Request;
 
 class ReportsController extends Controller
@@ -16,9 +18,12 @@ class ReportsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser($request);
+        $projects = $this->requestAPI('/api/projects', 'GET', ['limit' => -1])->data->projects;
+        $subprojects = $this->requestAPI('/api/subprojects', 'GET', ['limit' => -1])->data;
+        $employees = User::with('roles')->sortable(['email' => 'asc'])->get()->toArray();
 
         $filters = [
             'id'            => $request->get('id'),
@@ -31,21 +36,15 @@ class ReportsController extends Controller
             'limit'         => $request->get('limit') ?? self::DEFAULT_LIMIT
         ];
         
-        $project_response = $this->requestAPI('/api/projects', 'GET', $filters);
+        $reports_response = $this->requestAPI('/api/time-history', 'GET', $filters);
 
-        $projects = [];
-        if ($project_response->success) {
-            $projects = $project_response->data->projects;
-            $count = $project_response->data->count;
+        $reports = [];
+        if ($reports_response->success) {
+            $reports = $reports_response->data->time_history;
+            $count = $reports_response->data->count;
         }
 
-        $next = "";
-        $project_no_response = $this->requestAPI('/api/projects/project_no', 'GET');
-
-        if ($project_no_response->success) {
-            $next = $project_no_response->data->project_no;
-        }
-        return view('reports.index', compact(['projects', 'count', 'next']));
+        return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees']));
     }
 
     /**
