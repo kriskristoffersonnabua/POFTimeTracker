@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('last_name')->nullable()->default(null);
             $table->string('email')->unique();
             $table->string('password');
+            $table->integer('employee_no');
             $table->tinyInteger('active')->default(1)->unsigned();
             $table->uuid('confirmation_code')->nullable();
             $table->boolean('confirmed')->default(config('access.users.confirm_email') ? false : true);
