@@ -92,9 +92,10 @@ class ActivityController extends Controller
                     'title' => 'required',
                     'description' => 'required',
                     'acceptance_criteria' => 'required',
+                    'status' => 'required',
                     'estimated_hours' => 'required'
                 ]);
-
+            
             $params = $request->all();
             $new_activity = new Activity;
             $new_activity->subproject_id = $params['subproject_id'];

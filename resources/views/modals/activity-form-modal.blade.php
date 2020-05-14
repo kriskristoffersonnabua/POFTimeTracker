@@ -69,18 +69,25 @@
                                 <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
                                     <label> Status </label>
                                 </div>
-                                <input type="text" class="form-control" style="width: 100%; text-align: right">
+                                <input id="status" type="text" class="form-control" style="width: 100%; text-align: right">
                                 </input>
                             </div>
 
                             <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
                                 <label> Acceptance Criteria: </label>
-                                @for( $i= 0 ; $i < 5 ; $i ++ )
                                 <div style="padding-top: 5px">
-                                    <input type="text" class="form-control" style="width: 100%;">
+                                    <input id="acceptanceCriteria" type="text" class="form-control" style="width: 100%;">
+                                    </input>
+                                </div>    
+                            </div>
+
+                            <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
+                                <label> Estimated Hours: </label>
+                                <div style="padding-top: 5px">
+                                    <input id="estimatedHours" type="text" class="form-control" style="width: 100%;">
                                     </input>
                                 </div>
-                                @endfor
+                                
                             </div>
 
                         </div>
@@ -120,6 +127,28 @@
             $('#createActivity').on('click', function(e){
                 var description = $('#description').val();
                 var title = $('#title').val();
+                var status = $('#status').val();
+                var acceptanceCriteria = $('#acceptanceCriteria').val();
+                var estimatedHours = parseInt($('#estimatedHours').val());
+                var employeeId = 1
+
+                $.ajax({
+                    type:'POST',
+                    url:'/api/activity',
+                    data:{
+                        subproject_id:subproject_id, 
+                        activity_no:updated_activity_no, 
+                        title:title,
+                        description:description,
+                        acceptance_criteria:acceptanceCriteria,
+                        estimated_hours:estimatedHours,
+                        status:status,
+                        employee_user_id:employeeId
+                    },
+                    success:function(data) {
+                        
+                    }
+                });
                
             })
         </script>
