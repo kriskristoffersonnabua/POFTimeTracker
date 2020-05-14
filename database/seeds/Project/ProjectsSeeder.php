@@ -20,6 +20,22 @@ class ProjectsSeeder extends Seeder
                 'description'       => 'Sample Description',
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
+            ],
+            [
+                'id'                => 4,
+                'project_no'        => 4,
+                'name'              => 'Subproject Name 4',
+                'description'       => 'Sample Description',
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ],
+            [
+                'id'                => 5,
+                'project_no'        => 5,
+                'name'              => 'Subproject Name 5',
+                'description'       => 'Sample Description',
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
             ]
         ]);
     }
