@@ -20,7 +20,6 @@ class SubProjectController extends Controller
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser($request);
-        $accessToken = $user->createToken('poftt-token')->accessToken;
 
         $params = $request->all();
         $subprojects = [];

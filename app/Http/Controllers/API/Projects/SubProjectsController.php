@@ -180,12 +180,14 @@ class SubProjectsController extends Controller
             $params = $request->all();
 
             $subproject = SubProjects::where('project_id', $params['project_id'])->orderBy('subproject_no','desc')->first();
-            $project = Projects::find($params['project_id'])->first();
+           
+            $project = Projects::where('id',$params['project_id'])->first();
             $next_subproject_no = $project->project_no . '-1';
             if ($subproject) {
                 $last_subproject_no = intval(str_replace($project->project_no . '-','',$subproject->subproject_no));
                 $next_subproject_no = $project->project_no .'-' . ($last_subproject_no + 1);
             }
+
             return $this->sendResponse(['subproject_no' => $next_subproject_no], "SubProject no. fetched.");
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
