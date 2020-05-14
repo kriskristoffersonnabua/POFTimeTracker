@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class ReportsController extends Controller
 {
+    const DEFAULT_OFFSET = 0;
+    const DEFAULT_LIMIT = 10; 
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,34 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        return view('reports.index');
+        $user = $this->getAuthenticatedUser($request);
+
+        $filters = [
+            'id'            => $request->get('id'),
+            'project_id'    => $request->get('project_id'),
+            'user_id'       => $request->get('user_id'),
+            'subproject_id' => $request->get('subproject_id'),
+            'time_start'    => $request->get('time_start'),
+            'time_end'      => $request->get('time_end'),
+            'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
+            'limit'         => $request->get('limit') ?? self::DEFAULT_LIMIT
+        ];
+        
+        $project_response = $this->requestAPI('/api/projects', 'GET', $filters);
+
+        $projects = [];
+        if ($project_response->success) {
+            $projects = $project_response->data->projects;
+            $count = $project_response->data->count;
+        }
+
+        $next = "";
+        $project_no_response = $this->requestAPI('/api/projects/project_no', 'GET');
+
+        if ($project_no_response->success) {
+            $next = $project_no_response->data->project_no;
+        }
+        return view('reports.index', compact(['projects', 'count', 'next']));
     }
 
     /**

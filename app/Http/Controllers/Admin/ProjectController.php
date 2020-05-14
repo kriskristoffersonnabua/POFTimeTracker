@@ -27,7 +27,7 @@ class ProjectController extends Controller
             'project_no'    => $request->get('project_no'),
             'name'          => $request->get('name'),
             'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
-            'offset'        => $request->get('limit') ?? self::DEFAULT_LIMIT
+            'limit'        => $request->get('limit') ?? self::DEFAULT_LIMIT
         ];
         
         $project_response = $this->requestAPI('/api/projects', 'GET', $filters);

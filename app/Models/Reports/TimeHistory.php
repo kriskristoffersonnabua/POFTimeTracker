@@ -169,7 +169,26 @@ class TimeHistory extends Model
         $activity = $this->activity()->first();
         unset($activity->created_at);
         unset($activity->updated_at);
-        
+
         return $activity ? $activity->toArray() : null;
+    }
+
+    /**
+     * Scope query to join project and subproject
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $wildcards
+     * @param string $contact_name
+     * @param string $contact_email
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeJoinProjectAndSubproject($query)
+    {
+        $query->join('activities', 'activities.id', 'time_history.activity_id');
+        $query->join('subprojects', 'subprojects.id', 'activities.subproject_id');
+        $query->join('projects', 'projects.id', 'subprojects.project_id');
+
+        return $query;
     }
 }

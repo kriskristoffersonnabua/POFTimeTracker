@@ -23,6 +23,8 @@ class TimeHistoryController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'user_id'       => $this->convertCommaSeparated($request->get('user_id')),
                 'activity_id'   => $this->convertCommaSeparated($request->get('activity_id')),
+                'project_id'    => $this->convertCommaSeparated($request->get('project_id')),
+                'subproject_id' => $this->convertCommaSeparated($request->get('subproject_id')),
                 'date'          => $this->convertDateRange($request->get('date')),
                 'time_start'    => $this->convertDate($request->get('time_start')),
                 'time_end'      => $this->convertDate($request->get('time_end'))
@@ -57,6 +59,8 @@ class TimeHistoryController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'user_id'       => $this->convertCommaSeparated($request->get('user_id')),
                 'activity_id'   => $this->convertCommaSeparated($request->get('activity_id')),
+                'project_id'    => $this->convertCommaSeparated($request->get('project_id')),
+                'subproject_id' => $this->convertCommaSeparated($request->get('subproject_id')),
                 'date'          => $this->convertDateRange($request->get('date')),
                 'time_start'    => Carbon::parse($request->get('time_start'))->toTimeString(),
                 'time_end'      => Carbon::parse($request->get('time_end'))->toTimeString()
@@ -179,8 +183,15 @@ class TimeHistoryController extends Controller
     protected function buildQuery($filters) {        
         $dateFields = ['date', 'time_start', 'time_end'];
         $query = app(TimeHistory::class);
+        if (in_array('project_id', array_keys($filters)) || in_array('subproject_id', array_keys($filters))) {
+            $query = $query->joinProjectAndSubproject($query);
+        }
         foreach ($filters as $key => $value) {
-            if (in_array($key, $dateFields)) {
+            if ($key == 'project_id') {
+                $query = $query->where('projects.id', $value);
+            } elseif ($key == 'subproject_id') {
+                $query = $query->where('subprojects.id', $value);
+            } elseif (in_array($key, $dateFields)) {
                 if (count($value) == 1) {
                     extract($this->convertDateFormat($value)[0]);
                     $query = $query->whereRaw(DB::raw("$key $comparison ?"));
