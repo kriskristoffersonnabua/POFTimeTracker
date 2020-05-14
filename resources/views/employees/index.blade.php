@@ -27,13 +27,12 @@
         text-align: left;
     }
 </style>
-
 <div class="x_content">
     <div class="" role="main">
         <div class="">
             <div class="row">
               <div class="col-md-12" style="text-align: center">
-                <div class="x_panel" style="width: 90%;">
+                <div class="x_panel">
                     <div class="x_title">
                         <h2>Employees</h2>
                         <div class="clearfix"> </div>
@@ -45,31 +44,27 @@
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                    <th class="th-sm" style="width: 7%">Employee No.</th>
+                                    <th class="th-sm">Employee No.</th>
                                     <th class="th-sm">Last Name</th>
                                     <th class="th-sm">First Name</th>
                                     <th class="th-sm">Email</th>
-                                    <th class="th-sm" style="width: 15%">Date Registered</th>
+                                    <th class="th-sm">Date Registered</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i=0; $i < 20; $i++)
-                                <tr>
-                                    <td>101</td>
-                                    <td>
-                                        <a>Ji</a>
-                                    </td>
-                                    <td>
-                                        Chang Wook
-                                    </td>
-                                    <td>
-                                        jichangwook@gmail.com
-                                    </td>
-                                    <td>
-                                        01/01/2015
-                                    </td>
-                                </tr>
-                                @endfor
+                                @if(!empty($users))
+                                    @foreach($users as $user)
+                                        @if(!$user->hasRole('administrator'))
+                                            <tr>
+                                                <td>{{$user->employee_no}}</td>
+                                                <td>{{$user->last_name}}</td>
+                                                <td>{{$user->first_name}}</td>
+                                                <td>{{$user->email}}</td>
+                                                <td>{{date('m/d/Y', strtotime($user->created_at))}}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                         </div>

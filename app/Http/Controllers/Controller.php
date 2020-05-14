@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\Breadcrumbs;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Route;
 
 class Controller extends BaseController
 {
@@ -23,5 +27,35 @@ class Controller extends BaseController
     public function responseInJson($data)
     {
         return response()->json($data);
+    }
+
+    /**
+     * Get user
+     *
+     * @param  Request $request
+     *
+     * @return App\User
+     *
+     * @throws AuthenticationException
+     */
+    protected function getAuthenticatedUser(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            throw new AuthenticationException('Unauthenticated.', 401);
+        }
+        
+        return $user;
+    }
+
+    protected function requestAPI( $link, $method = 'GET', $filters = []) {
+        $request = Request::create($link, $method, array_merge([
+            'headers' => [
+                'Accept'        => 'application/json'
+            ],
+        ], $filters));
+
+        return $response = json_decode(Route::dispatch($request)->getContent());    
     }
 }

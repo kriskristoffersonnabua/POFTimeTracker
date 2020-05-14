@@ -99,25 +99,21 @@ class TimeHistoryController extends Controller
         try {
             $request->validate([
                 'user_id' => 'required',
-                'activity_id' => 'required',
-                'date' => 'required',
-                'time_start' => 'required'
+                'activity_id' => 'required'
             ]);
+
+            $date_now = Carbon::now();
 
             $user_id = $request->get('user_id');
             $activity_id = $request->get('activity_id');
-            $date = $request->get('date');
-            $time_start = $request->get('time_start');
-            $time_end = $request->get('time_end');
 
             $timeHistory = new TimeHistory;
             $timeHistory->user_id = $user_id;
             $timeHistory->activity_id = $activity_id;
-            $timeHistory->date = $date;
-            $timeHistory->time_start = $time_start;
-            $timeHistory->time_end = $time_end;
-            $timeHistory->created_at = Carbon::now();
-            $timeHistory->updated_at = Carbon::now();
+            $timeHistory->date = $date_now->toDateString(); ;
+            $timeHistory->time_start = $date_now;
+            $timeHistory->created_at = $date_now;
+            $timeHistory->updated_at = $date_now;
             $timeHistory->save();
 
             return $this->sendResponse($timeHistory->toArray(), "Time history created.") ;
@@ -155,14 +151,12 @@ class TimeHistoryController extends Controller
     
     public function update(Request $request, $id) {
         try {
+            $hms = explode(":", $request->get('time_consumed'));
+            $time_consumed = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
 
             $data = [
-                'user_id'           => $request->get('user_id'),
-                'activity_id'       => $request->get('activity_id'),
-                'date'              => $request->get('date'),
-                'time_start'        => $request->get('time_start'),
-                'time_end'          => $request->get('time_end'),
-                'time_consumed'     => $request->get('time_consumed')
+                'time_end'      => Carbon::now(),
+                'time_consumed' => $time_consumed
             ];
 
             $timeHistory = app(TimeHistory::class)->findOrFail($id);

@@ -29,6 +29,8 @@ class Projects extends Model
      */
     protected $fillable = ['project_no', 'name', 'description'];
 
+    protected $appends = ['subprojects'];
+    
     public function subprojects() {
 
         return $this->hasMany(
@@ -36,6 +38,10 @@ class Projects extends Model
             'project_id',
             'id'
         );
+    }
+
+    public function getSubprojectsAttribute() {
+        return $this->subprojects()->get()->toArray();
     }
 
 

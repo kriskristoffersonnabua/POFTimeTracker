@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Activity;
+namespace App\Http\Controllers\API\Activity;
 
 use App\Models\Auth\User\User;
 use App\Models\Activity\Activity;
@@ -37,6 +37,10 @@ class ActivityController extends Controller
 
             if (array_key_exists('activity_no', $params)) {
                 $activity_query = Activity::where('activity_no', $params['activity_no']);
+            }
+
+            if (array_key_exists('status', $params)) {
+                $activity_query = Activity::where('status', $params['status']);
             }
 
             if (isset($activity_query)) {

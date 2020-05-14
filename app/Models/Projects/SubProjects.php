@@ -22,6 +22,8 @@ class SubProjects extends Model
      */
     protected $primaryKey = 'id';
 
+    protected $appends = ['activities'];
+
     protected $fillable = [
         'subproject_no',
         'subproject_name', 
@@ -29,11 +31,14 @@ class SubProjects extends Model
     ];
 
     public function activities() {
-
         return $this->hasMany(
             Activity::class,
             'subproject_id',
             'id'
         );
+    }
+
+    public function getActivitiesAttribute() {
+        return $this->activities()->get()->toArray();
     }
 }

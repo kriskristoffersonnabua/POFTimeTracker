@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use lluminate\Routing\ResponseFactory;
+use Illuminate\Routing\ResponseFactory;
 use App\Traits\ApiHelper;
 
 class ProjectsController extends Controller
@@ -24,7 +24,8 @@ class ProjectsController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'created_at'    => $this->convertDateRange($request->get('created_at')),
                 'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'project_no'    => $request->get('project_no'),
+                'name'          => $request->get('name'),
             ];
             $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
             $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
@@ -56,7 +57,8 @@ class ProjectsController extends Controller
                 'id'            => $this->convertCommaSeparated($request->get('id')),
                 'created_at'    => $this->convertDateRange($request->get('created_at')),
                 'updated_at'    => $this->convertDateRange($request->get('updated_at')),
-                'project_no'    => $request->get('project_no')
+                'project_no'    => $request->get('project_no'),
+                'name'          => $request->get('name')
             ];
 
             $filters = array_remove_null($filters);
@@ -165,6 +167,29 @@ class ProjectsController extends Controller
 
             return $this->sendError(
                 'Project could not be deleted',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+
+    public function getNextProjectNo() {
+        try {
+            $project = app(Projects::class)->orderBy('project_no','desc')->first();
+
+            $next_project_no = '000001';
+            if ($project) {
+                $last_project_no = intval($project->project_no);
+                $next_project_no = str_pad($last_project_no + 1,6,"0",STR_PAD_LEFT);
+            }
+
+            return $this->sendResponse(['project_no' => $next_project_no], "Project no. fetched.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Projects No. could not be fetched',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500

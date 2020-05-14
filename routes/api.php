@@ -13,52 +13,54 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
     Route::group(['prefix' => '/projects'], function () {
-        Route::get('/', 'Api\Projects\ProjectsController@index');
-        Route::get('/count', 'Api\Projects\ProjectsController@count');
-        Route::post('/', 'Api\Projects\ProjectsController@store');
+        Route::get('/', 'API\Projects\ProjectsController@index');
+        Route::get('/count', 'API\Projects\ProjectsController@count');
+        Route::get('/project_no', 'API\Projects\ProjectsController@getNextProjectNo');
+        Route::post('/', 'API\Projects\ProjectsController@store');
         Route::group(['prefix' => '/{id}'], function () {
-            Route::get('/', 'Api\Projects\ProjectsController@show');
-            Route::patch('/', 'Api\Projects\ProjectsController@update');
-            Route::delete('/', 'Api\Projects\ProjectsController@destroy');
+            Route::get('/', 'API\Projects\ProjectsController@show');
+            Route::patch('/', 'API\Projects\ProjectsController@update');
+            Route::delete('/', 'API\Projects\ProjectsController@destroy');
         });
     });
 
     Route::group(['prefix' => '/subprojects'], function () {
-        Route::get('/', 'Api\Projects\SubProjectsController@index');
-        Route::post('/', 'Api\Projects\SubProjectsController@store');
+        Route::get('/', 'API\Projects\SubProjectsController@index');
+        Route::get('/subproject_no', 'API\Projects\SubProjectsController@getNextSubProjectNo');
+        Route::post('/', 'API\Projects\SubProjectsController@store');
         Route::group(['prefix' => '/{id}'], function () {
-            Route::get('/', 'Api\Projects\SubProjectsController@show');
-            Route::patch('/', 'Api\Projects\SubProjectsController@update');
-            Route::delete('/', 'Api\Projects\SubProjectsController@delete');
+            Route::get('/', 'API\Projects\SubProjectsController@show');
+            Route::patch('/', 'API\Projects\SubProjectsController@update');
+            Route::delete('/', 'API\Projects\SubProjectsController@delete');
         });
     });
 
     Route::group(['prefix' => '/activity'], function () {
-        Route::get('/', 'Api\Activity\ActivityController@index');
-        Route::post('/', 'Api\Activity\ActivityController@store');
+        Route::get('/', 'API\Activity\ActivityController@index');
+        Route::post('/', 'API\Activity\ActivityController@store');
         Route::group(['prefix' => '/{id}'], function () {
-            Route::get('/', 'Api\Activity\ActivityController@show');
-            Route::patch('/', 'Api\Activity\ActivityController@update');
-            Route::delete('/', 'Api\Activity\ActivityController@delete');
+            Route::get('/', 'API\Activity\ActivityController@show');
+            Route::patch('/', 'API\Activity\ActivityController@update');
+            Route::delete('/', 'API\Activity\ActivityController@delete');
 
-            Route::post('/add-tba', 'Api\Activity\ActivityTBASController@store');
-            Route::get('/get-tba', 'Api\Activity\ActivityTBASController@index');
+            Route::post('/add-tba', 'API\Activity\ActivityTBASController@store');
+            Route::get('/get-tba', 'API\Activity\ActivityTBASController@index');
 
-            Route::post('/add-comment', 'Api\Activity\ActivityCommentsController@store');
-            Route::get('/get-comments', 'Api\Activity\ActivityCommentsController@index');
+            Route::post('/add-comment', 'API\Activity\ActivityCommentsController@store');
+            Route::get('/get-comments', 'API\Activity\ActivityCommentsController@index');
         });
 
-        Route::delete('/remove-tba/{atba_id}', 'Api\Activity\ActivityTBASController@delete');
-        Route::patch('/update-tba/{atba_id}', 'Api\Activity\ActivityTBASController@update');
+        Route::delete('/remove-tba/{atba_id}', 'API\Activity\ActivityTBASController@delete');
+        Route::patch('/update-tba/{atba_id}', 'API\Activity\ActivityTBASController@update');
 
-        Route::delete('/remove-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@delete');
-        Route::patch('/update-comment/{comment_id}', 'Api\Activity\ActivityCommentsController@update');
+        Route::delete('/remove-comment/{comment_id}', 'API\Activity\ActivityCommentsController@delete');
+        Route::patch('/update-comment/{comment_id}', 'API\Activity\ActivityCommentsController@update');
     });
 
     Route::group(['prefix' => '/time-history'], function () {
@@ -69,9 +71,28 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/', 'API\Reports\TimeHistoryController@show');
             Route::patch('/', 'API\Reports\TimeHistoryController@update');
             Route::delete('/', 'API\Reports\TimeHistoryController@destroy');
+
+            Route::post('/add-screenshot', 'API\Reports\TimeHistoryScreenshotsController@store');
+            Route::get('/get-screenshots', 'API\Reports\TimeHistoryScreenshotsController@index');
+            Route::get('/show-screenshot', 'API\Reports\TimeHistoryScreenshotsController@show');
         });
+
+        Route::patch('/update-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@update');
+        Route::delete('/delete-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@destroy');
     });
 
+    Route::group(['prefix' => '/activities'], function() {
+        Route::group(['prefix' => '/activity-files'], function () {
+            Route::get('/', 'API\Activities\ActivityFilesController@index');
+            Route::post('/', 'API\Activities\ActivityFilesController@store');
+            Route::group(['prefix' => '/{id}'], function () {
+                Route::get('/', 'API\Activities\ActivityFilesController@show');
+                Route::patch('/', 'API\Activities\ActivityFilesController@update');
+                Route::delete('/', 'API\Activities\ActivityFilesController@delete');
+            });
+        });
+    });        
+    
     Route::group(['prefix' => '/subprojects'], function () {
         Route::post('/assign-employee', 'API\Employees\SubprojectEmployeesController@assignBatchEmployees');
         Route::post('/unassign-employee', 'API\Employees\SubprojectEmployeesController@unassignSubprojectEmployee');
@@ -82,6 +103,7 @@ Route::middleware('auth:api')->group(function () {
             Route::patch('/', 'API\Employees\SubprojectEmployeesController@update');
         });
     });
+
 });
 
 Route::post('/login', 'Auth\APILoginController@login');

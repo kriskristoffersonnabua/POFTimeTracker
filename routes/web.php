@@ -58,6 +58,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/employees', 'EmployeesController@index')->name('employees');
     Route::get('/reports', 'ReportsController@index')->name('reports');
 
+    //projects
+    Route::post('/projects', 'ProjectController@create')->name('projects.create');
+    Route::patch('/projects/{id}', 'ProjectController@update')->name('projects.update');
+    Route::delete('/projects/{id}', 'ProjectController@destroy')->name('projects.destroy');
+
+    //subprojects
+    Route::post('/subprojects', 'SubProjectController@create')->name('subprojects.create');
+    Route::get('/subprojects/subproject_no', 'SubProjectController@getNextSubProjectNo')->name('subprojects.project_no');
+    Route::patch('/subprojects/{id}', 'SubProjectController@update')->name('subprojects.update');
+    Route::delete('/subprojects/{id}', 'SubProjectController@destroy')->name('subprojects.destroy');
+    
     //Users
     Route::get('users', 'UserController@index')->name('users');
     Route::get('users/restore', 'UserController@restore')->name('users.restore');

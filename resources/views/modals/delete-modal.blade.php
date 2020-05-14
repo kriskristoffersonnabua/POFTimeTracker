@@ -10,7 +10,7 @@
                 <h4>Delete selected Project?</h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Yes</button>
+                <button type="button" class="btn btn-primary" id="confirmDelete">Yes</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
             </div>
         </div>
