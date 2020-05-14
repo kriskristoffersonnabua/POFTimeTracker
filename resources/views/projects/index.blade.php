@@ -33,7 +33,7 @@
         <div class="">
             <div class="row">
               <div class="col-md-12" style="text-align: center">
-                <div class="x_panel" style="width: 90%;">
+                <div class="x_panel">
                     <div class="x_title">
                         <h2>Projects</h2>
                         <div class="title_right">
@@ -58,25 +58,22 @@
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" style="width: 5%">Project No.</th>
+                                <th class="th-sm" >Project No.</th>
                                 <th class="th-sm" >Project Name</th>
-                                <th class="th-sm" >Project Description</th>
-                                <th class="th-sm" style="width: 20%">Links</th>
+                                <th class="th-sm" ></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($projects as $project)
                                 <tr>
-                                    <td style="width: 5%">{{$project->project_no}}</td>
+                                    <td >{{$project->project_no}}</td>
                                     <td  >
-                                        <a>{{ $project->name}}</a>
+                                        <a>{{$project->name}}</a>
                                         <br />
-                                        <small>{{ $project->created_at}}</small>
+                                        {{-- <small>{{ $project->created_at}}</small> --}}
+                                        <small>{{ $project->description}}</small>
                                     </td>
-                                    <td> 
-                                    {{ $project->description}}
-                                    </td>
-                                    <td style="width: 20%">
+                                    <td>
                                         <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
@@ -115,12 +112,6 @@
 </div>
 
 @endsection
-
-@section('scripts')
-    @parent
-    {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
-@endsection
-
 
 @push('scripts')
     <script type="text/javascript">
