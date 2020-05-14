@@ -5,6 +5,9 @@ namespace App\Models\Reports;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Auth\User\User;
+use App\Models\Activity\Activity;
+
 class TimeHistory extends Model
 {
 
@@ -29,6 +32,7 @@ class TimeHistory extends Model
      */
     protected $fillable = ['user_id', 'activity_id', 'date', 'time_start', 'time_end', 'time_consumed'];
 
+    protected $appends = ['employee', 'activity'];
 
     /**
      * Parse the created at field which can optionally have a millisecond data.
@@ -135,5 +139,37 @@ class TimeHistory extends Model
             }
 
             return Carbon::parse(implode('.', $temp))->format('Y-m-d H:i:s');
+    }
+
+    public function employee() {
+        return $this->belongsTo(
+            User::class,
+            'user_id',
+            'id'
+        );
+    }
+
+    public function activity() {
+        return $this->belongsTo(
+            Activity::class,
+            'activity_id',
+            'id'
+        );
+    }
+
+    public function getEmployeeAttribute() {
+        $employee = $this->employee()->first();
+        unset($employee->created_at);
+        unset($employee->updated_at);
+
+        return $employee ? $employee->toArray() : null;
+    }
+
+    public function getActivityAttribute() {
+        $activity = $this->activity()->first();
+        unset($activity->created_at);
+        unset($activity->updated_at);
+        
+        return $activity ? $activity->toArray() : null;
     }
 }
