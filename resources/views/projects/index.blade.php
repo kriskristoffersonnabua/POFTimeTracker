@@ -33,7 +33,7 @@
         <div class="">
             <div class="row">
               <div class="col-md-12" style="text-align: center">
-                <div class="x_panel">
+                <div class="x_panel" style="width: 90%;">
                     <div class="x_title">
                         <h2>Projects</h2>
                         <div class="title_right">
@@ -58,23 +58,25 @@
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" >Project No.</th>
-                                <th class="th-sm" >Project</th>
-                                <th class="th-sm" ></th>
+                                <th class="th-sm" style="width: 5%">Project No.</th>
+                                <th class="th-sm" >Project Name</th>
+                                <th class="th-sm" >Project Description</th>
+                                <th class="th-sm" style="width: 20%">Links</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($projects as $project)
                                 <tr>
-                                    <td>{{$project->project_no}}</td>
+                                    <td style="width: 5%">{{$project->project_no}}</td>
                                     <td  >
                                         <a>{{ $project->name}}</a>
                                         <br />
-                                        <br />
-                                        <!-- <small>{{ $project->created_at}}</small><br/> -->
-                                        <span>{{ $project->description}}</span>
+                                        <small>{{ $project->created_at}}</small>
                                     </td>
-                                    <td>
+                                    <td> 
+                                    {{ $project->description}}
+                                    </td>
+                                    <td style="width: 20%">
                                         <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
@@ -117,71 +119,75 @@
 @section('scripts')
     @parent
     {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
-    <script>
-    $(document).ready(function(){
-        let selected = null;
-        $(document).on('click','.searchProjects',function(event){
-            event.preventDefault();
-            selected = $(this);
-            
-            let search = $('input[name=search]').val();
-            document.location.search =  "?name=" + search;
-        });
+@endsection
 
-        $(document).on('click','.addProject',function(event){
-            event.preventDefault();
-            selected = $(this);
-            
-            $('#addEditForm').attr('action', selected.attr('data-href'));
-            $('#addEditForm').attr('method', selected.attr('data-method'));
-            $('input[name=project_no]').val(selected.attr('data-next'));
-            $('input[name=name]').val('');
-            $('textarea[name=description]').html('');
-            $('#addEditForm').find('input[name=_method]').remove();
-        });
 
-        $(document).on('click','.updateProject',function(event){
-            event.preventDefault();
-            selected = $(this);
-            
-            $('#addEditForm').attr('action', selected.attr('href'));
-            $('#addEditForm').attr('method', "POST");
-            $('input[name=project_no]').val(selected.attr('data-project_no'));
-            $('input[name=name]').val(selected.attr('data-name'));
-            $('textarea[name=description]').html(selected.attr('data-description'));
-            $('<input>').attr({
-                type: 'hidden',
-                name: '_method',
-                value:"PATCH"
-            }).appendTo('#addEditForm');
-        });
+@push('scripts')
+    <script type="text/javascript">
+        $(document).ready(function(){
+            let selected = null;
+            $(document).on('click','.searchProjects',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                let search = $('input[name=search]').val();
+                document.location.search =  "?name=" + search;
+            });
 
-        $(document).on('click','.deleteProject',function(event){
-            event.preventDefault();
-            selected = $(this);
-        });
-        $(document).on('click','#confirmDelete',function(){
-            event.preventDefault();
-            let do_refresh = false;
-            $.ajax({
-                method: "DELETE",
-                url: selected.attr('href'),
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "id":selected.attr('data-id')
-                },
-                success: function (data, status, xhr) {
-                    if(data.success)
-                        location.reload();
-                },
-                error: function(){
-                    alert("Something went wrong.");
-                }
+            $(document).on('click','.addProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#addEditForm').attr('action', selected.attr('data-href'));
+                $('#addEditForm').attr('method', selected.attr('data-method'));
+                $('input[name=project_no]').val(selected.attr('data-next'));
+                $('input[name=name]').val('');
+                $('textarea[name=description]').html('');
+                $('#addEditForm').find('input[name=_method]').remove();
+            });
+
+            $(document).on('click','.updateProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#addEditForm').attr('action', selected.attr('href'));
+                $('#addEditForm').attr('method', "POST");
+                $('input[name=project_no]').val(selected.attr('data-project_no'));
+                $('input[name=name]').val(selected.attr('data-name'));
+                $('textarea[name=description]').html(selected.attr('data-description'));
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_method',
+                    value:"PATCH"
+                }).appendTo('#addEditForm');
+            });
+
+            $(document).on('click','.deleteProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+            });
+            $(document).on('click','#confirmDelete',function(){
+                event.preventDefault();
+                let do_refresh = false;
+                $.ajax({
+                    method: "DELETE",
+                    url: selected.attr('href'),
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id":selected.attr('data-id')
+                    },
+                    success: function (data, status, xhr) {
+                        if(data.success)
+                            location.reload();
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
             });
         });
-    });
     </script>
-@endsection
+@endpush
 
 @section('styles')
     @parent
