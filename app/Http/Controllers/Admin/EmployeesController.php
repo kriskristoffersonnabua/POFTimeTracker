@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Employees;
+use App\Models\Auth\Role\Role;
+use App\Models\Auth\User\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,7 +17,7 @@ class EmployeesController extends Controller
      */
     public function index()
     {
-        return view('employees.index');
+        return view('employees.index', ['users' => User::with('roles')->sortable(['email' => 'asc'])->paginate()]);
     }
 
     /**
