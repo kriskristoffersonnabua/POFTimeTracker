@@ -65,7 +65,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     //subprojects
     Route::post('/subprojects', 'SubProjectController@create')->name('subprojects.create');
+    Route::post('/assign', 'SubProjectController@assign')->name('subprojects.assign');
     Route::get('/subprojects/subproject_no', 'SubProjectController@getNextSubProjectNo')->name('subprojects.project_no');
+    Route::get('/subprojects/{id}/employees', 'SubProjectController@getAssignedEmployees')->name('subprojects.employees');
+    Route::post('/subprojects/{id}/assign', 'SubProjectController@assign')->name('subprojects.assign');
     Route::patch('/subprojects/{id}', 'SubProjectController@update')->name('subprojects.update');
     Route::delete('/subprojects/{id}', 'SubProjectController@destroy')->name('subprojects.destroy');
     

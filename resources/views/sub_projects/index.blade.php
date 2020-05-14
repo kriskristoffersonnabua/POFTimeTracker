@@ -97,19 +97,34 @@
                                 <tr>
                                     <td >{{$project->subproject_no}}</td>
                                     <td  >
-                                        <a>{{$project->name}}</a>
+                                        <a>{{$project->subproject_name}}</a>
                                         <br />
                                         {{-- <small>{{ $project->created_at}}</small> --}}
                                         <small>{{ $project->description}}</small>
                                     </td>
                                     <td>
-                                        <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View Tasks </a>
+                                        <a href="{{url()->action('Admin\ActivitiesController@index', ['subproject_id' => $project->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View Activities </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
-                                        <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" data-description="{{$project->description}}" class="btn btn-info btn-sm updateProject" data-toggle="modal" data-target=".add-modal">
+                                        <a href="{{url()->action('Admin\SubProjectController@assign', ['id' => $project->id])}}" 
+                                            data-id="{{$project->id}}" 
+                                            data-project_id="{{$project->project_id}}" 
+                                            data-project_no="{{$project->subproject_no}}" 
+                                            data-name="{{$project->subproject_name}}" 
+                                            data-user_id="{{$project->user_id}}" 
+                                            class="btn btn-warning btn-sm assignSubProject" data-toggle="modal" data-target=".assign-modal">
+                                            <i class="fa fa-check"></i> Assign 
+                                        </a>
+                                        <a href="{{url()->action('Admin\SubProjectController@update', ['id' => $project->id])}}" 
+                                            data-id="{{$project->id}}" 
+                                            data-project_id="{{$project->project_id}}" 
+                                            data-project_no="{{$project->subproject_no}}" 
+                                            data-name="{{$project->subproject_name}}" 
+                                            data-description="{{$project->description}}" 
+                                            class="btn btn-info btn-sm updateSubProject" data-toggle="modal" data-target=".add-sub-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="{{url()->action('Admin\ProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
+                                        <a href="{{url()->action('Admin\SubProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
                                         @endif 
@@ -125,8 +140,13 @@
                 </div>
             </div>
         </div>
-
+        
         <!---- Modals ---->
+
+        <div class="modal fade assign-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            @include('modals.assign-modal',['users' => $users])
+        </div>
+
         <div class="modal fade delete-modal" tabindex="-1" role="dialog" aria-hidden="true">
             @include('modals.delete-modal')
         </div>
@@ -173,20 +193,39 @@
                 $('#subProjectForm').find('input[name=_method]').remove();
             });
 
-            $(document).on('click','.updateProject',function(event){
+            $(document).on('click','.updateSubProject',function(event){
                 event.preventDefault();
                 selected = $(this);
                 
-                $('#addEditForm').attr('action', selected.attr('href'));
-                $('#addEditForm').attr('method', "POST");
-                $('input[name=project_no]').val(selected.attr('data-project_no'));
-                $('input[name=name]').val(selected.attr('data-name'));
+                $('#subProjectForm').attr('action', selected.attr('href'));
+                $('#subProjectForm').attr('method', "POST");
+                $('select[name=project_id]').val(selected.attr('data-project_id'));
+                $('input[name=subproject_no]').val(selected.attr('data-project_no'));
+                $('input[name=subproject_name]').val(selected.attr('data-name'));
                 $('textarea[name=description]').html(selected.attr('data-description'));
                 $('<input>').attr({
                     type: 'hidden',
                     name: '_method',
                     value:"PATCH"
-                }).appendTo('#addEditForm');
+                }).appendTo('#subProjectForm');
+            });
+
+            $(document).on('click','.assignSubProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#assignSubProjectForm').attr('action', selected.attr('href'));
+                $('#assignSubProjectForm').attr('method', "POST");
+                $('#subpr_no').val(selected.attr('data-project_no'));
+                $('#subpr_name').val(selected.attr('data-name'));
+                $('#tl_id').val(selected.attr('data-user_id'));
+                $("#pro_id").val(selected.attr('data-project_id'));
+                getAssignedEmployees(selected.attr('data-id'));
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_token',
+                    value: "{{ csrf_token() }}"
+                }).appendTo('#assignSubProjectForm');
             });
 
             $(document).on('click','.deleteProject',function(event){
@@ -224,6 +263,30 @@
                 },
                 success: function (data, status, xhr) {
                     $("#subproject_no").val(data);
+                },
+                error: function(){
+                    alert("Something went wrong.");
+                }
+            });
+        }
+
+        function getAssignedEmployees(subproject_id) {
+            $.ajax({
+                method: "GET",
+                url: "{{url()->action('Admin\SubProjectController@getNextSubProjectNo', ['id' => " + subproject_id + "])}}",
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function (data, status, xhr) {
+                    if( data.length > 0 ) {
+                        $("#employees option").each(function(){
+                            for( i = 0; i < data.length; i++) {
+                                if( data[i].emp_user_id == $(this).val() ) {
+                                    $(this).prop('selected', 'true')
+                                }
+                            }
+                        });
+                    }
                 },
                 error: function(){
                     alert("Something went wrong.");

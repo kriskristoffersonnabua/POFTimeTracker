@@ -16,7 +16,7 @@ class Subprojects extends Migration
         Schema::create('subprojects', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('user_id');
+            $table->integer('user_id')->unassigned()->default(0);
 
             $table->string('subproject_no')->nullable()->default(null);
             $table->string('subproject_name')->nullable()->default(null);
@@ -26,11 +26,6 @@ class Subprojects extends Migration
             $table->foreign('project_id', 'foreign_project')
                 ->references('id')
                 ->on('projects')
-                ->onDelete('cascade');
-
-            $table->foreign('user_id', 'foreign_user')
-                ->references('id')
-                ->on('users')
                 ->onDelete('cascade');
         });
     }

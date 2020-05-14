@@ -117,11 +117,11 @@ class SubprojectEmployeesController extends Controller
     public function unassignSubprojectEmployee(Request $request) {
         try {
             $request->validate([
-                'id' => 'required'
+                'subproject_id' => 'required'
             ]);
-            $id = $request->get('id');
+            $id = $request->get('subproject_id');
 
-            $subprojectEmployee = app(SubprojectEmployees::class)->findOrFail($id);
+            $subprojectEmployee = app(SubprojectEmployees::class)->where("subproject_id", $id);
             if ($subprojectEmployee->delete()) {
                 return $this->sendResponse(['is_unassigned' => true], "Subproject Employee unassigned");
             }
