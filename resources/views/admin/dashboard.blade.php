@@ -133,10 +133,9 @@
     
 @endsection
 
-@section('scripts')
-    @parent
+@push('scripts')
     {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
-@endsection
+@endpush
 
 @section('styles')
     @parent

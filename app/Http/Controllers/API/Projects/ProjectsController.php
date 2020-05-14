@@ -174,6 +174,29 @@ class ProjectsController extends Controller
         }
     }
 
+    public function getNextProjectNo() {
+        try {
+            $project = app(Projects::class)->orderBy('project_no','desc')->first();
+
+            $next_project_no = '000001';
+            if ($project) {
+                $last_project_no = intval($project->project_no);
+                $next_project_no = str_pad($last_project_no + 1,6,"0",STR_PAD_LEFT);
+            }
+
+            return $this->sendResponse(['project_no' => $next_project_no], "Project no. fetched.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Projects No. could not be fetched',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+
     protected function buildQuery($filters) {        
         $dateFields = ['created_at', 'updated_at'];
 

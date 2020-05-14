@@ -26,30 +26,45 @@
     td {
         text-align: left;
     }
+    .addProject{
+        margin-top: -5px !important;
+    }
 </style>
+<div class="page-title">
+    <div class="title_left">
+        <h3>Projects</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-5 col-sm-5  form-group row pull-right top_search">
+            <button class="btn btn-success btn-sm addProject pull-right" type="button" data-toggle="modal" 
+                data-target=".add-modal" 
+                data-href="{{url()->action('Admin\ProjectController@create')}}" 
+                data-method="POST" data-next="{{$next}}">
+                    <span class="fa fa-plus"></span>
+                    Add Project
+            </button>
+        </div>
+    </div>
+</div>
 
 <div class="x_content">
     <div class="" role="main">
         <div class="">
             <div class="row">
               <div class="col-md-12" style="text-align: center">
-                <div class="x_panel" style="width: 90%;">
-                    <div class="x_title">
-                        <h2>Projects</h2>
+                <div class="x_panel">
+                    <div class="">
                         <div class="title_right">
-                            <div class="col-md-1 col-sm-1 col-xs-1 form-group pull-right top_search">
-                                <button class="btn btn-success addProject" type="button" data-toggle="modal" data-target=".add-modal" data-href="{{url()->action('Admin\ProjectController@create')}}" data-method="POST" data-next="{{$next}}">Add Project</button>
+                            <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search" style="height: 30px">
+                                <div class="input-group">
+                                    <input name="search" type="text" class="form-control" placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default searchProjects" type="button">Go!</button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                    </div>
-                    <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search" style="height: 30px">
-                        <div class="input-group">
-                            <input name="search" type="text" class="form-control" placeholder="Search for...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default searchProjects" type="button">Go!</button>
-                            </span>
-                        </div>
                     </div>
                     <div class="x_content">
                         <!-- start project list -->
@@ -58,26 +73,23 @@
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" style="width: 5%">Project No.</th>
+                                <th class="th-sm" >Project No.</th>
                                 <th class="th-sm" >Project Name</th>
-                                <th class="th-sm" >Project Description</th>
-                                <th class="th-sm" style="width: 20%">Links</th>
+                                <th class="th-sm" ></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($projects as $project)
                                 <tr>
-                                    <td style="width: 5%">{{$project->project_no}}</td>
+                                    <td >{{$project->project_no}}</td>
                                     <td  >
-                                        <a>{{ $project->name}}</a>
+                                        <a>{{$project->name}}</a>
                                         <br />
-                                        <small>{{ $project->created_at}}</small>
+                                        {{-- <small>{{ $project->created_at}}</small> --}}
+                                        <small>{{ $project->description}}</small>
                                     </td>
-                                    <td> 
-                                    {{ $project->description}}
-                                    </td>
-                                    <td style="width: 20%">
-                                        <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View </a>
+                                    <td>
+                                        <a href="{{url()->action('Admin\SubProjectController@index', ['project_id' => $project->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View SubProjects </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
                                         <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" data-description="{{$project->description}}" class="btn btn-info btn-sm updateProject" data-toggle="modal" data-target=".add-modal">
@@ -115,12 +127,6 @@
 </div>
 
 @endsection
-
-@section('scripts')
-    @parent
-    {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
-@endsection
-
 
 @push('scripts')
     <script type="text/javascript">
