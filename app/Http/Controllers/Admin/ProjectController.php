@@ -21,7 +21,6 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser($request);
-        $accessToken = $user->createToken('poftt-token')->accessToken;
 
         $filters = [
             'id'            => $request->get('id'),
