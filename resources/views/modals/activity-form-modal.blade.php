@@ -26,7 +26,7 @@
                                 <div class="col-md-8 col-sm-8 col-xs-8" style="padding-top: 12px">
                                     <label> Activity No. </label>
                                 </div>
-                                <input type="text" class="form-control" style="width: 100%; text-align: right" 
+                                <input id="activity_no" type="text" class="form-control" style="width: 100%; text-align: right" 
                                     readonly="readonly" placeholder="00001">
                                 </input>
                             </div>
@@ -54,7 +54,7 @@
                                 <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
                                     <label> Title: </label>
                                 </div>
-                               <input type="text" class="form-control" style="width: 100%; text-align: right">
+                               <input id="title" type="text" class="form-control" style="width: 100%; text-align: right">
                                </input>
                             </div>
 
@@ -62,7 +62,7 @@
                                 <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
                                     <label> Description: </label>
                                 </div>
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea id="description" class="form-control" rows="3"></textarea>
                             </div>
 
                             <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
@@ -89,26 +89,39 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save</button>
+                <button id="createActivity" type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
 
     @push('scripts') 
         <script>
+           var subproject_id , updated_activity_no;
+
            $('#subproject').on('change',function(e){
-                var subproject_id = $(this).val();
-                console.log(subproject_id);
+                subproject_id = $(this).val();
+               
                 $.ajax({
                     type:'GET',
                     url:'/api/activity?subproject_id=' + subproject_id,
                     data:{},
                     success:function(data) {
-                        var recent_activity = Object.keys(data.data).pop();
-                        console.log(data.data[recent_activity]['activity_no']);
+                        $('#activity_no').val(1);
+
+                        if (data.data.length) {
+                            var recent_activity = Object.keys(data.data).pop();
+                            updated_activity_no = parseInt(data.data[recent_activity]['activity_no']) + 1;
+                            $('#activity_no').val(updated_activity_no);
+                        }
                     }
                 });
             });
+
+            $('#createActivity').on('click', function(e){
+                var description = $('#description').val();
+                var title = $('#title').val();
+               
+            })
         </script>
     @endpush  
     
