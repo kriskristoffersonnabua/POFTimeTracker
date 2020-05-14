@@ -56,7 +56,7 @@
                                     @foreach($users as $user)
                                         @if(!$user->hasRole('administrator'))
                                             <tr>
-                                                <td>{{$user->id}}</td>
+                                                <td>{{$user->employee_no}}</td>
                                                 <td>{{$user->last_name}}</td>
                                                 <td>{{$user->first_name}}</td>
                                                 <td>{{$user->email}}</td>
