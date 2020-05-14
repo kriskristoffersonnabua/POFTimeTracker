@@ -21,6 +21,7 @@ Route::middleware('api')->group(function () {
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'API\Projects\ProjectsController@index');
         Route::get('/count', 'API\Projects\ProjectsController@count');
+        Route::get('/project_no', 'API\Projects\ProjectsController@getNextProjectNo');
         Route::post('/', 'API\Projects\ProjectsController@store');
         Route::group(['prefix' => '/{id}'], function () {
             Route::get('/', 'API\Projects\ProjectsController@show');
@@ -31,6 +32,7 @@ Route::middleware('api')->group(function () {
 
     Route::group(['prefix' => '/subprojects'], function () {
         Route::get('/', 'API\Projects\SubProjectsController@index');
+        Route::get('/subproject_no', 'API\Projects\SubProjectsController@getNextSubProjectNo');
         Route::post('/', 'API\Projects\SubProjectsController@store');
         Route::group(['prefix' => '/{id}'], function () {
             Route::get('/', 'API\Projects\SubProjectsController@show');

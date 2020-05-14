@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Projects;
 
 use App\Models\Projects\SubProjects;
+use App\Models\Projects\Projects;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -167,6 +168,30 @@ class SubProjectsController extends Controller
 
             return $this->sendError(
                 'Subproject could not be deleted',
+                ['error'=> $e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
+        }
+    }
+
+    public function getNextSubProjectNo(Request $request) {
+        try {
+            $params = $request->all();
+
+            $subproject = SubProjects::where('project_id', $params['project_id'])->orderBy('subproject_no','desc')->first();
+            $project = Projects::find($params['project_id'])->first();
+            $next_subproject_no = $project->project_no . '-1';
+            if ($subproject) {
+                $last_subproject_no = intval(str_replace($project->project_no . '-','',$subproject->subproject_no));
+                $next_subproject_no = $project->project_no .'-' . ($last_subproject_no + 1);
+            }
+            return $this->sendResponse(['subproject_no' => $next_subproject_no], "SubProject no. fetched.");
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'SubProject No. could not be fetched',
                 ['error'=> $e->getMessage()],
                 $errorCode && $errorCode <= 500 ?
                     $errorCode: 500

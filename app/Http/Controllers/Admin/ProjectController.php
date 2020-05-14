@@ -30,19 +30,19 @@ class ProjectController extends Controller
             'offset'        => $request->get('limit') ?? self::DEFAULT_LIMIT
         ];
         
-        $request = Request::create('/api/projects', 'GET', array_merge([
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ], $filters));
-
-        $response = json_decode(Route::dispatch($request)->getContent());
+        $project_response = $this->requestAPI('/api/projects', 'GET', $filters);
 
         $projects = [];
-        if ($response->success) {
-            $projects = $response->data->projects;
-            $count = $response->data->count;
-            $next = str_pad($count + 1,6,"0",STR_PAD_LEFT);
+        if ($project_response->success) {
+            $projects = $project_response->data->projects;
+            $count = $project_response->data->count;
+        }
+
+        $next = "";
+        $project_no_response = $this->requestAPI('/api/projects/project_no', 'GET');
+
+        if ($project_no_response->success) {
+            $next = $project_no_response->data->project_no;
         }
         return view('projects.index', compact(['projects', 'count', 'next']));
     }
@@ -62,13 +62,8 @@ class ProjectController extends Controller
             'description'   => $request->get('description')
         ];
 
-        $request = Request::create('/api/projects', 'POST', array_merge([
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ], $params));
+        $request = $this->requestAPI('/api/projects', 'POST', $params);
 
-        Route::dispatch($request);
         return Redirect::action('Admin\ProjectController@index');
     }
 
@@ -88,13 +83,8 @@ class ProjectController extends Controller
             'description'   => $request->get('description')
         ];
 
-        $request = Request::create("/api/projects/${id}", 'PATCH', array_merge([
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ], $params));
+        $request = $this->requestAPI("/api/projects/${id}", 'PATCH', $params);
 
-        Route::dispatch($request);
         return Redirect::action('Admin\ProjectController@index');
     }
 
@@ -108,13 +98,7 @@ class ProjectController extends Controller
     {
         $user = $this->getAuthenticatedUser($request);
 
-        $request = Request::create("/api/projects/${id}", 'DELETE', [
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ]);
-
-        $response = Route::dispatch($request);
+        $response = $this->requestAPI("/api/projects/${id}", 'DELETE');
 
         return $response;
     }

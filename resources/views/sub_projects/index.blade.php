@@ -26,101 +26,96 @@
     td {
         text-align: left;
     }
-</style>
+    .filter-fields select{
+        width: 150px;
+        display: inline;
+        margin-left: 10px;
+        font-size: 11px;
+        padding: 6px !important;
+    }
 
+    .filter-fields, .filter-fields button{
+        margin-top: -5px
+    }
+</style>
+<div class="page-title">
+    <div class="title_left">
+        <h3>SubProjects</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-8 col-sm-8 filter-fields form-group row pull-right text-right">
+            <label> Projects </label>
+            <select class="form-control" id="select-project">
+                @foreach ($projects as $project)
+                    <option {{ app('request')->input('project_id') == $project->id ? 'selected' : '' }} 
+                        value="{{$project->id}}">
+                        {{$project->project_no}} - {{$project->name}}
+                    </option>
+                @endforeach
+            </select>
+            <button class="btn btn-success btn-sm addSubProject" type="button" data-toggle="modal" 
+                data-target=".add-sub-modal" 
+                data-href="{{url()->action('Admin\SubProjectController@create')}}" 
+                data-method="POST">
+                    <span class="fa fa-plus"></span>
+                    Add SubProject
+            </button>
+        </div>
+    </div>
+</div>
 <div class="x_content">
     <div class="" role="main">
         <div class="">
             <div class="row">
-              <div class="col-md-12" style="text-align: center">
+              <div class="col-md-12">
                 <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Sub Projects</h2>
-                        
-                        <div class="title_right">
-                            <div class="col-md-4 col-sm-4 col-xs-4 form-group pull-right top_search">
-                                
-                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding-left: 30px">
-                                    <div class="col-md-3 col-sm-3 col-xs-3" style="padding-top: 10px; padding-left: 20px">
-                                        <label> Projects </label>
-                                    </div>
-                                    <div class="col-md-8 col-sm-8 col-xs-8">
-                                        <select class="form-control">
-                                            @for ($i = 1; $i < 10 ; $i++)
-                                                <option> Project 0000{{ $i }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 col-sm-3 col-xs-3">
-                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target=".add-sub-modal">Add Sub Project</button>
-                                </div>
+                    <div class="">
+                        <div class="col-md-3 col-sm-3 col-xs-12 filter-fields pull-right top_search">
+                            <div class="input-group">
+                                <input name="search" type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default searchProjects" type="button">Go!</button>
+                                </span>
                             </div>
+                        </div>
                         <div class="clearfix"></div>
-                        </div>
                     </div>
-
-                    <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search" style="height: 30px">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Go!</button>
-                            </span>
-                        </div>
-                    </div>
-
                     <div class="x_content">
                         <!-- start project list -->
+                        
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" style="width: 5%">Sub Project No.</th>
-                                <th class="th-sm" >Name</th>
-                                <th class="th-sm" >Description</th>
-                                <th class="th-sm" style="width: 20%">Links</th>
+                                <th class="th-sm" >SubProject No.</th>
+                                <th class="th-sm" >SubProject Name</th>
+                                <th class="th-sm" ></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i=0; $i < 20; $i++)
+                                @foreach($subprojects as $project)
                                 <tr>
-                                    <td style="width: 5%">#</td>
+                                    <td >{{$project->subproject_no}}</td>
                                     <td  >
-                                        <a>Pesamakini Backend UI</a>
+                                        <a>{{$project->name}}</a>
                                         <br />
-                                        <small>Created 01.01.2015</small>
+                                        {{-- <small>{{ $project->created_at}}</small> --}}
+                                        <small>{{ $project->description}}</small>
                                     </td>
-                                    <td> 
-                                    DataTables has most features enabled by default, 
-                                    so all you need to do to use it with your own tables is to call the construction function:
-                                    </td>
-                                    <td style="width: 25%">
+                                    <td>
+                                        <a href="{{ route('subprojects')}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View Tasks </a>
+
                                         @if(auth()->user()->hasRole('administrator'))
-                                        <a href="#" class="btn btn-dark btn-sm" data-toggle="modal" data-target=".assign-modal">
-                                            <i class="fa fa-check"></i> Assign 
-                                        </a>
-                                        @endif
-                                        <a href="{{ route('activities') }}" class="btn btn-primary btn-sm">
-                                            <i class="fa fa-folder"></i> Activities
-                                        </a>
-                                        @if(auth()->user()->hasRole('administrator'))
-                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".add-sub-modal">
+                                        <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" data-description="{{$project->description}}" class="btn btn-info btn-sm updateProject" data-toggle="modal" data-target=".add-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".delete-modal">
+                                        <a href="{{url()->action('Admin\ProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
-                                        @endif
-                                        @if(!auth()->user()->hasRole('administrator'))
-                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".details-modal">
-                                            <i class="fa fa-list-alt"></i> Details
-                                        </a>
-                                        @endif
-
+                                        @endif 
                                     </td>
                                 </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                         </div>
@@ -137,15 +132,7 @@
         </div>
 
         <div class="modal fade add-sub-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.add-sub-modal')
-        </div>
-
-        <div class="modal fade assign-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.assign-modal')
-        </div>
-
-        <div class="modal fade details-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.details-modal')
+            @include('modals.add-sub-modal',['projects' => $projects, 'project_id' => app('request')->input('project_id')])
         </div>
 
         <!---- End of Modals ---->
@@ -155,10 +142,96 @@
 
 @endsection
 
-@section('scripts')
-    @parent
-    {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
-@endsection
+@push('scripts')
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#select-project").change(function(){
+                window.location = "?project_id=" + $(this).val();
+            });
+
+            let selected = null;
+            $(document).on('click','.searchProjects',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                let search = $('input[name=search]').val();
+                document.location.search =  "?name=" + search;
+            });
+
+            $(document).on('click','.addSubProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#subProjectForm').attr('action', selected.attr('data-href'));
+                $('#subProjectForm').attr('method', selected.attr('data-method'));
+
+                $('#subproject-select').val($('#select-project').val());
+                $('#subproject_no').val(getSubProjNo($('#select-project').val()));
+
+                $('input[name=name]').val('');
+                $('textarea[name=description]').html('');
+                $('#subProjectForm').find('input[name=_method]').remove();
+            });
+
+            $(document).on('click','.updateProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#addEditForm').attr('action', selected.attr('href'));
+                $('#addEditForm').attr('method', "POST");
+                $('input[name=project_no]').val(selected.attr('data-project_no'));
+                $('input[name=name]').val(selected.attr('data-name'));
+                $('textarea[name=description]').html(selected.attr('data-description'));
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_method',
+                    value:"PATCH"
+                }).appendTo('#addEditForm');
+            });
+
+            $(document).on('click','.deleteProject',function(event){
+                event.preventDefault();
+                selected = $(this);
+            });
+            $(document).on('click','#confirmDelete',function(){
+                event.preventDefault();
+                let do_refresh = false;
+                $.ajax({
+                    method: "DELETE",
+                    url: selected.attr('href'),
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id":selected.attr('data-id')
+                    },
+                    success: function (data, status, xhr) {
+                        if(data.success)
+                            location.reload();
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
+            });
+        });
+
+        function getSubProjNo(project_id) {
+            $.ajax({
+                method: "GET",
+                url: "{{url()->action('Admin\SubProjectController@getNextSubProjectNo')}}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "project_id":project_id
+                },
+                success: function (data, status, xhr) {
+                    $("#subproject_no").val(data);
+                },
+                error: function(){
+                    alert("Something went wrong.");
+                }
+            });
+        }
+    </script>
+@endpush
 
 @section('styles')
     @parent

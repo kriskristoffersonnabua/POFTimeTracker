@@ -10,6 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Route;
 
 class Controller extends BaseController
 {
@@ -46,5 +47,15 @@ class Controller extends BaseController
         }
         
         return $user;
+    }
+
+    protected function requestAPI( $link, $method = 'GET', $filters = []) {
+        $request = Request::create($link, $method, array_merge([
+            'headers' => [
+                'Accept'        => 'application/json'
+            ],
+        ], $filters));
+
+        return $response = json_decode(Route::dispatch($request)->getContent());    
     }
 }
