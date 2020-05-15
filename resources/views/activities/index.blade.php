@@ -26,46 +26,52 @@
     td {
         text-align: left;
     }
+
+    .filter-fields select{
+        width: 150px;
+        display: inline;
+        margin-left: 10px;
+        font-size: 11px;
+        padding: 6px !important;
+    }
+
+    .filter-fields, .filter-fields button{
+        margin-top: -5px
+    }
 </style>
 
+<div class="page-title">
+    <div class="title_left">
+        <h3>Activities</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-12 col-sm-12 filter-fields form-group row pull-right text-right">
+            <label> Projects </label>
+            <select class="form-control">
+                @for ($i = 1; $i < 10 ; $i++)
+                    <option> Project 0000{{ $i }}</option>
+                @endfor
+            </select>
+            <label> SubProjects </label>
+            <select class="form-control">
+                @for ($i = 1; $i < 10 ; $i++)
+                    <option> Sub Project 0000{{ $i }}</option>
+                @endfor
+            </select>
+            <button class="btn btn-success btn-sm" type="button" data-toggle="modal" 
+                data-target=".activity-form-modal" >
+                    <span class="fa fa-plus"></span>
+                    Add Activity
+            </button>
+        </div>
+    </div>
+</div>
 <div class="x_content">
     <div class="" role="main">
         <div class="">
             <div class="row">
               <div class="col-md-12" style="text-align: center">
                 <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Activities</h2>
-                        
-                        <div class="title_right">
-                            <div class="form-group pull-right top_search">
-                                
-                                @if(auth()->user()->hasRole('administrator'))
-                                <div style="padding-left: 30px">
-                                @else
-                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding-left: 30px">
-                                @endif
-                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                        <label> Sub Projects </label>
-                                    </div>
-                                    <div class="col-md-8 col-sm-8 col-xs-8">
-                                        <select class="form-control">
-                                            @for ($i = 1; $i < 10 ; $i++)
-                                                <option> Sub Project 0000{{ $i }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-
-                                @if(!auth()->user()->hasRole('administrator'))
-                                <div class="col-md-3 col-sm-3 col-xs-3 pull-right">
-                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target=".activity-form-modal">Add Activity</button>
-                                </div>
-                                @endif
-                            </div>
-                        <div class="clearfix"></div>
-                        </div>
-                    </div>
 
                     <div class="col-md-3 col-sm-3 col-xs-3 form-group pull-right top_search" style="height: 30px">
                         <div class="input-group">

@@ -49,21 +49,15 @@ class Controller extends BaseController
         return $user;
     }
 
-    protected function requestAPI( $link, $method = 'GET', $filters = [], $debug = false) {
+    protected function requestAPI( $link, $method = 'GET', $filters = []) {
         $request = Request::create($link, $method, array_merge([
             'headers' => [
                 'Accept'        => 'application/json'
             ],
         ], $filters));
-        if($debug){
-            var_dump($filters);
-        }
 
         $response = json_decode(Route::dispatch($request)->getContent());
 
-        if($debug){
-            dd($response);
-        }
         return $response;
     }
 }

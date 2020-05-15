@@ -43,6 +43,11 @@ class ActivityController extends Controller
                 $activity_query = Activity::where('status', $params['status']);
             }
 
+            if (empty($params)) {
+                $activity_query = Activity::all();
+                return $this->sendResponse($activity_query->toArray(), "Activity fetched.");
+            }
+
             if (isset($activity_query)) {
                 return $this->sendResponse($activity_query->get()->toArray(), "Activity fetched.");
             } else {

@@ -41,7 +41,7 @@ class SubProjectsController extends Controller
                 $subproject_query = SubProjects::where('project_id', $params['project_id']);
             }
 
-            if (empty($params)) {
+            if (empty($params) || !$subproject_query) {
                 $subproject_query = SubProjects::all();
                 return $this->sendResponse($subproject_query->toArray(), "Subproject/s fetched.");
             }

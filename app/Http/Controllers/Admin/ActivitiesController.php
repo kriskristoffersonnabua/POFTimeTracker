@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Activities;
+// use App\Activities;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Route;
 
@@ -16,12 +16,11 @@ class ActivitiesController extends Controller
      */
     public function index(Request $request)
     {
-        $activityRequests = Request::create('/api/activity', 'GET');
-        $activityResponse = json_decode(Route::dispatch($activityRequests)->getContent());
+        
+        $activityResponse = $this->requestAPI('/api/activity', 'GET');
+        
 
-        $subprojectRequests = Request::create('/api/subprojects', 'GET');
-        $subprojectResponse = json_decode(Route::dispatch($subprojectRequests)->getContent());
-
+        $subprojectResponse = $this->requestAPI('/api/subprojects', 'GET', []);
         return view('activities.index' , 
             [
                 "activities"=>$activityResponse->data, 
