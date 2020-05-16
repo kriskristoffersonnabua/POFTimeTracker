@@ -52,6 +52,7 @@
 
                         <div class="col-md-2 col-sm-2 col-xs-2">
                             <select class="form-control projectSelect">
+                            <option value="" {{ ($project_id == '') ? 'selected' : '' }}>All projects</option>
                             @foreach($projects as $project)
                                 <option value="{{$project['id']}}"  {{ ($project['id'] == $project_id) ? 'selected' : '' }}>{{$project['project_no']}}</option>
                             @endforeach
@@ -64,6 +65,7 @@
                                     
                         <div class="col-md-2 col-sm-2 col-xs-2">
                             <select class="form-control subprojectSelect">
+                            <option value="" {{ ($subproject_id == '') ? 'selected' : '' }}>All subprojects</option>
                             @foreach($subprojects as $subproject)
                                 <option value="{{$subproject['id']}}" {{ ($subproject['id'] == $subproject_id) ? 'selected' : '' }}>{{$subproject['subproject_no']}}</option>
                             @endforeach
@@ -76,6 +78,7 @@
                                     
                         <div class="col-md-2 col-sm-2 col-xs-2">
                             <select class="form-control employeeSelect">
+                            <option value="" {{ ($user_id == '') ? 'selected' : '' }}>All employees</option>
                             @foreach($employees as $employee)
                                 <option value="{{$employee['id']}}" {{ ($employee['id'] == $user_id) ? 'selected' : '' }}>{{$employee['first_name'].' '.$employee['last_name']}}</option>
                             @endforeach
@@ -91,7 +94,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="text" name="date_from" value="{{$date_from}}" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -108,7 +111,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="text"name="date_to" value="{{$date_to}}" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -137,7 +140,7 @@
                                 @foreach($reports as $report)
                                 <tr>
                                     <td style="width: 7%">{{$report['date']}}</td>
-                                    <td> Pesamakini Backend UI </td>
+                                    <td>{{$report['name']}}</td>
                                     <td>{{$report['employee']['first_name'].' '.$report['employee']['last_name']}}</td>
                                     <td>{{$report['activity']['title']}}</td>
                                     <td>{{$report['time_start']}}</td>
@@ -219,7 +222,16 @@
                 window.history.replaceState({}, "", baseUrl + params);
                 window.history.go();
             };
-
+            $(document).on('change','input[name=date_from]',function(event){
+                event.preventDefault();
+                let date_from = $(this).val();
+                updateQueryStringParam('date_from', date_from);
+            });
+            $(document).on('change','input[name=date_to]',function(event){
+                event.preventDefault();
+                let date_to = $(this).val();
+                updateQueryStringParam('date_to', date_to);
+            });
             $(document).on('change','.projectSelect',function(event){
                 event.preventDefault();
                 let projectID = $(this).val();

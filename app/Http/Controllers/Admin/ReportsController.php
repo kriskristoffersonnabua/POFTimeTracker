@@ -31,6 +31,8 @@ class ReportsController extends Controller
         $project_id = $request->get('project_id');
         $subproject_id = $request->get('subproject_id');
         $user_id = $request->get('user_id');
+        $date_from = $request->get('date_from');
+        $date_to = $request->get('date_to');
 
         $filters = [
             'id'            => $request->get('id'),
@@ -49,9 +51,9 @@ class ReportsController extends Controller
         $query = $query->orderBy('time_history.id','desc');
 
         $count = $query->count();
-        $reports = $query->get();
+        $reports = $query->select('time_history.id', 'time_history.user_id', 'time_history.activity_id', 'time_history.date', 'time_history.time_start', 'time_history.time_end', 'time_history.time_consumed', 'projects.name')->get();
 
-        return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees', 'user_id', 'project_id', 'subproject_id']));
+        return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees', 'user_id', 'project_id', 'subproject_id', 'date_from', 'date_to']));
     }
 
     /**
@@ -123,14 +125,15 @@ class ReportsController extends Controller
     protected function buildQuery($filters) {        
         $dateFields = ['date', 'time_start', 'time_end'];
         $query = app(TimeHistory::class);
-        if (in_array('project_id', array_keys($filters)) || in_array('subproject_id', array_keys($filters))) {
-            $query = $query->joinProjectAndSubproject($query);
-        }
+
+        $query = $query->joinProjectAndSubproject($query);
         foreach ($filters as $key => $value) {
             if ($key == 'project_id') {
                 $query = $query->where('projects.id', $value);
             } elseif ($key == 'subproject_id') {
                 $query = $query->where('subprojects.id', $value);
+            } elseif ($key == 'user_id') {
+                $query = $query->where('time_history.user_id', $value);
             } elseif (in_array($key, $dateFields)) {
                 if (count($value) == 1) {
                     extract($this->convertDateFormat($value)[0]);
