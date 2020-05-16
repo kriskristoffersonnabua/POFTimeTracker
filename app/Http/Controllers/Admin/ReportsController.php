@@ -7,6 +7,9 @@ use App\Reports;
 use App\Models\Auth\Role\Role;
 use App\Models\Auth\User\User;
 use Illuminate\Http\Request;
+use App\Models\Projects\Projects;
+use App\Models\Projects\SubProjects;
+use App\Models\Reports\TimeHistory;
 
 class ReportsController extends Controller
 {
@@ -21,30 +24,34 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser($request);
-        $projects = $this->requestAPI('/api/projects', 'GET', ['limit' => -1])->data->projects;
-        $subprojects = $this->requestAPI('/api/subprojects', 'GET', ['limit' => -1])->data;
+        $projects = app(Projects::class)->select('id', 'project_no')->get()->toArray();
+        $subprojects = app(SubProjects::class)->select('id', 'subproject_no')->get()->toArray();
         $employees = User::with('roles')->sortable(['email' => 'asc'])->get()->toArray();
+
+        $project_id = $request->get('project_id');
+        $subproject_id = $request->get('subproject_id');
+        $user_id = $request->get('user_id');
 
         $filters = [
             'id'            => $request->get('id'),
-            'project_id'    => $request->get('project_id'),
-            'user_id'       => $request->get('user_id'),
-            'subproject_id' => $request->get('subproject_id'),
+            'project_id'    => $project_id,
+            'user_id'       => $user_id,
+            'subproject_id' => $subproject_id,
             'time_start'    => $request->get('time_start'),
-            'time_end'      => $request->get('time_end'),
-            'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
-            'limit'         => $request->get('limit') ?? self::DEFAULT_LIMIT
+            'time_end'      => $request->get('time_end')
         ];
-        
-        $reports_response = $this->requestAPI('/api/time-history', 'GET', $filters);
+    
+        $filters = array_remove_null($filters);
+        $query = $this->buildQuery($filters);
 
-        $reports = [];
-        if ($reports_response->success) {
-            $reports = $reports_response->data->time_history;
-            $count = $reports_response->data->count;
-        }
+        $query = $query->offset($request->get('offset') ?? self::DEFAULT_OFFSET);
+        $query = $query->limit( $request->get('limit') ?? self::DEFAULT_LIMIT);
+        $query = $query->orderBy('time_history.id','desc');
 
-        return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees']));
+        $count = $query->count();
+        $reports = $query->get();
+
+        return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees', 'user_id', 'project_id', 'subproject_id']));
     }
 
     /**
@@ -111,5 +118,39 @@ class ReportsController extends Controller
     public function destroy(Reports $reports)
     {
         //
+    }
+
+    protected function buildQuery($filters) {        
+        $dateFields = ['date', 'time_start', 'time_end'];
+        $query = app(TimeHistory::class);
+        if (in_array('project_id', array_keys($filters)) || in_array('subproject_id', array_keys($filters))) {
+            $query = $query->joinProjectAndSubproject($query);
+        }
+        foreach ($filters as $key => $value) {
+            if ($key == 'project_id') {
+                $query = $query->where('projects.id', $value);
+            } elseif ($key == 'subproject_id') {
+                $query = $query->where('subprojects.id', $value);
+            } elseif (in_array($key, $dateFields)) {
+                if (count($value) == 1) {
+                    extract($this->convertDateFormat($value)[0]);
+                    $query = $query->whereRaw(DB::raw("$key $comparison ?"));
+                    $bindings[] = $date;
+                } elseif (count($value) == 2) {
+                    $query = $query->whereRaw(DB::raw("($key BETWEEN ? AND ?)"));
+                    $bindings[] = $value[0];
+                    $bindings[] = $value[1];
+                }
+                $query = $query->addBinding($bindings, 'where');
+            } elseif (is_array($value)) {
+                $query = $query->whereIn($key, $value);
+            } elseif (is_int($value)) {
+                $query = $query->where($key, $value);
+            } else {
+                $query = $query->whereRaw(DB::raw("$key LIKE ?"));
+                $query = $query->addBinding("%$value%", 'where');
+            }
+        }
+        return $query;
     }
 }
