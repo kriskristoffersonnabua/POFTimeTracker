@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\ApiHelper;
 
+use App\Utilities\FileStorageUtility;
+
 class TimeHistoryScreenshotsController extends Controller
 {
     use ApiHelper;
@@ -70,11 +72,15 @@ class TimeHistoryScreenshotsController extends Controller
 
     public function store(Request $request) {
         try {
+
+            $fileStorageUtility = app(FileStorageUtility::class);
             $data = $request->all();
+
+            $fileStorageUtility->uploadOrGetFileFromS3($data['screenshot_filename'], file_get_contents($data['screenshot']));
 
             $screenshot = new Screenshots;
             $screenshot->time_history_id = $data['time_history_id'];
-            $screenshot->screenshot = $data['screenshot'];
+            $screenshot->screenshot = null;
             $screenshot->screenshot_filename = $data['screenshot_filename'];
             $screenshot->date_added = Carbon::now();
             $screenshot->save();
