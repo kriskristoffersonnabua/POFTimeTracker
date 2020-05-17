@@ -39,6 +39,15 @@ Route::middleware('api')->group(function () {
             Route::patch('/', 'API\Projects\SubProjectsController@update');
             Route::delete('/', 'API\Projects\SubProjectsController@delete');
         });
+
+        Route::post('/assign-employee', 'API\Projects\SubprojectEmployeesController@assignBatchEmployees');
+        Route::post('/unassign-employee', 'API\Projects\SubprojectEmployeesController@unassignSubprojectEmployee');
+        Route::get('/employees', 'API\Projects\SubprojectEmployeesController@index');
+        Route::get('/employees/count', 'API\Projects\SubprojectEmployeesController@count');
+        Route::group(['prefix' => '/employees/{id}'], function () {
+            Route::get('/', 'API\Projects\SubprojectEmployeesController@show');
+            Route::patch('/', 'API\Projects\SubprojectEmployeesController@update');
+        });
     });
 
     Route::group(['prefix' => '/activity'], function () {
@@ -61,6 +70,16 @@ Route::middleware('api')->group(function () {
 
         Route::delete('/remove-comment/{comment_id}', 'API\Activity\ActivityCommentsController@delete');
         Route::patch('/update-comment/{comment_id}', 'API\Activity\ActivityCommentsController@update');
+
+        Route::group(['prefix' => '/activity-files'], function () {
+            Route::get('/', 'API\Activity\ActivityFilesController@index');
+            Route::post('/', 'API\Activity\ActivityFilesController@store');
+            Route::group(['prefix' => '/{id}'], function () {
+                Route::get('/', 'API\Activity\ActivityFilesController@show');
+                Route::patch('/', 'API\Activity\ActivityFilesController@update');
+                Route::delete('/', 'API\Activity\ActivityFilesController@delete');
+            });
+        });
     });
 
     Route::group(['prefix' => '/time-history'], function () {
@@ -79,31 +98,8 @@ Route::middleware('api')->group(function () {
 
         Route::patch('/update-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@update');
         Route::delete('/delete-screenshot/{id}', 'API\Reports\TimeHistoryScreenshotsController@destroy');
-    });
-
-    Route::group(['prefix' => '/activities'], function() {
-        Route::group(['prefix' => '/activity-files'], function () {
-            Route::get('/', 'API\Activities\ActivityFilesController@index');
-            Route::post('/', 'API\Activities\ActivityFilesController@store');
-            Route::group(['prefix' => '/{id}'], function () {
-                Route::get('/', 'API\Activities\ActivityFilesController@show');
-                Route::patch('/', 'API\Activities\ActivityFilesController@update');
-                Route::delete('/', 'API\Activities\ActivityFilesController@delete');
-            });
-        });
-    });        
+    });    
     
-    Route::group(['prefix' => '/subprojects'], function () {
-        Route::post('/assign-employee', 'API\Employees\SubprojectEmployeesController@assignBatchEmployees');
-        Route::post('/unassign-employee', 'API\Employees\SubprojectEmployeesController@unassignSubprojectEmployee');
-        Route::get('/employees', 'API\Employees\SubprojectEmployeesController@index');
-        Route::get('/employees/count', 'API\Employees\SubprojectEmployeesController@count');
-        Route::group(['prefix' => '/employees/{id}'], function () {
-            Route::get('/', 'API\Employees\SubprojectEmployeesController@show');
-            Route::patch('/', 'API\Employees\SubprojectEmployeesController@update');
-        });
-    });
-
 });
 
 Route::post('/login', 'Auth\APILoginController@login');

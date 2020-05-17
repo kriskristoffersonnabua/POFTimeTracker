@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Activities;
+namespace App\Models\Projects;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ActivityFile extends Model
+class SubprojectEmployees extends Model
 {
 
     /**
@@ -12,7 +12,7 @@ class ActivityFile extends Model
      *
      * @var string
      */
-    protected $table = 'activity_files';
+    protected $table = 'subproject_employees';
 
     /**
      * The primary key for the model.
@@ -20,11 +20,4 @@ class ActivityFile extends Model
      * @var string
      */
     protected $primaryKey = 'id';
-
-    /**
-     * Fillable Fields
-     *
-     * @var string
-     */
-    protected $fillable = ['activity_id', 'file', 'file_link'];
 }

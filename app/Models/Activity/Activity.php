@@ -5,6 +5,8 @@ namespace App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Projects\SubProjects;
+use App\Models\Activity\ActivityTBAS;
+use App\Models\Activity\ActivityFile;
 
 class Activity extends Model
 {
@@ -20,21 +22,29 @@ class Activity extends Model
         'estimated_hours',
         'status'
     ];
-
-    protected $appends = ['subprojects'];
-
+    
     public function subprojects() {
         return $this->belongsTo(
             SubProjects::class,
-            'project_id',
+            'subproject_id',
             'id'
         );
     }
 
-    public function getSubprojectsAttribute() {
-        $subprojects = $this->subprojects()->first();
-        unset($subprojects->created_at);
-        unset($subprojects->updated_at);
-        return $subprojects ? $subprojects->toArray() : null;
+    public function tbas() {
+        return $this->hasMany(
+            ActivityTBAS::class,
+            'activity_id',
+            'id'
+        );
     }
+
+    public function files() {
+        return $this->hasMany(
+            ActivityFile::class,
+            'activity_id',
+            'id'
+        );
+    }
+
 }

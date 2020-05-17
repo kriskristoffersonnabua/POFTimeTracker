@@ -66,12 +66,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     //subprojects
     Route::post('/subprojects', 'SubProjectController@create')->name('subprojects.create');
-    Route::post('/assign', 'SubProjectController@assign')->name('subprojects.assign');
     Route::get('/subprojects/subproject_no', 'SubProjectController@getNextSubProjectNo')->name('subprojects.project_no');
-    Route::get('/subprojects/{id}/employees', 'SubProjectController@getAssignedEmployees')->name('subprojects.employees');
+    Route::get('/subprojects/employees', 'SubProjectController@getAssignedEmployees')->name('subprojects.employees');
     Route::post('/subprojects/{id}/assign', 'SubProjectController@assign')->name('subprojects.assign');
     Route::patch('/subprojects/{id}', 'SubProjectController@update')->name('subprojects.update');
     Route::delete('/subprojects/{id}', 'SubProjectController@destroy')->name('subprojects.destroy');
+
+    //activity
+    Route::get('/activities/activity_no', 'ActivitiesController@getNextActivityNo')->name('activities.activity_no');
+    Route::post('/activities', 'ActivitiesController@create')->name('activities.create');
+    Route::get('/activities/{id}', 'ActivitiesController@show')->name('activities.show');
+    Route::patch('/activities/{id}', 'ActivitiesController@update')->name('activities.update');
+    Route::delete('/activities/{id}', 'ActivitiesController@destroy')->name('activities.destroy');
     
     //Users
     Route::get('users', 'UserController@index')->name('users');

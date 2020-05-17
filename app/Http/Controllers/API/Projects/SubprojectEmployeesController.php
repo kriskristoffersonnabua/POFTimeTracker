@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\API\Employees;
+namespace App\Http\Controllers\API\Projects;
 
 use App\Traits\DataConverterHelper;
-use App\Models\Employees\SubprojectEmployees;
+use App\Models\Projects\SubprojectEmployees;
 use App\Http\Controllers\Controller;
 use App\Traits\ApiHelper;
 use Carbon\Carbon;

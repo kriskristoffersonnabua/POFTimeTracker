@@ -7,152 +7,90 @@
                 <h4 class="modal-title" id="myModalLabel"> Activity Form </h4>
             </div>
 
-            <div class="modal-body">
-                <div class="x_panel" style="padding: 10px;">
-                    <div class="row" style="display: flex;">
-                        <div style="width: 500px;">
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
-                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding-top: 12px">
-                                    <label> Sub Project No.: </label>
+            <form id="activityForm" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="x_panel" style="padding: 10px;">
+                        <div class="row" style="display: flex;">
+                            <div style="width: 500px;">
+                                <div class="col-md-10 col-sm-10 col-xs-12" style="padding-top: 10px">
+                                    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:8px">
+                                        <label> SubProject: </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-6 col-xs-12">
+                                        <select id="subproject" class="form-control" name="subproject_id">
+                                            @foreach ($subprojects as $project)
+                                                @php $show = true @endphp
+                                                @if(app('request')->input('project_id') != "" && app('request')->input('project_id') != $project->project_id)
+                                                    @php $show = false @endphp
+                                                @endif
+                            
+                                                @if($show) 
+                                                    <option {{ app('request')->input('subproject_id') == $project->id ? 'selected' : '' }} 
+                                                        value="{{$project->id}}" data-project_id="{{$project->project_id}}">
+                                                        {{$project->subproject_no}} - {{$project->subproject_name}}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                                <select id="subproject" class="form-control">
-                                    @foreach ($subprojects as $subproject)
-                                        <option value="{{$subproject->id}}"> {{ $subproject->subproject_name }} </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
-                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding-top: 12px">
-                                    <label> Activity No. </label>
+                                <div class="col-md-10 col-sm-10 col-xs-12" style="padding-top: 10px">
+                                    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top: 8px">
+                                        <label> Activity No. </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-6 col-xs-12">
+                                        <input id="activity_no" name="activity_no" type="text" class="form-control" 
+                                            readonly="readonly" placeholder="00001">
+                                    </div>
                                 </div>
-                                <input id="activity_no" type="text" class="form-control" style="width: 100%; text-align: right" 
-                                    readonly="readonly" placeholder="00001">
-                                </input>
-                            </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
-                                <label> TBAs: </label>
-                                @for( $i= 0 ; $i < 5 ; $i ++ )
-                                <div style="padding-top: 5px">
-                                    <input type="text" class="form-control" style="width: 100%;">
-                                    </input>
+    
+                                <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
+                                    <label> TBAs: </label>
+                                    @for( $i= 0 ; $i < 3 ; $i ++ )
+                                    <div style="padding-top: 5px">
+                                        <input type="text" name="tba[]" class="form-control" style="width: 100%;">
+                                    </div>
+                                    @endfor
                                 </div>
-                                @endfor
-                            </div>
-                                
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
-                                <label> List of Files: </label>
-                                @for( $i= 0 ; $i < 5 ; $i ++ )
-                                <input type="file"> </input>
-                                @endfor
-                            </div>
-                        </div>
-
-                        <div style="width: 500px;">
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
-                                <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
-                                    <label> Title: </label>
+                                    
+                                <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
+                                    <label> List of Files: </label>
+                                    @for( $i= 0 ; $i < 3 ; $i ++ )
+                                    <input type="file" name="file[]">
+                                    @endfor
                                 </div>
-                               <input id="title" type="text" class="form-control" style="width: 100%; text-align: right">
-                               </input>
                             </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
-                                <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
-                                    <label> Description: </label>
+    
+                            <div style="width: 500px;">
+                                <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
+                                    <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
+                                        <label> Title: </label>
+                                    </div>
+                                   <input name="title" type="text" class="form-control" style="">
                                 </div>
-                                <textarea id="description" class="form-control" rows="3"></textarea>
-                            </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
-                                <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
-                                    <label> Status </label>
+    
+                                <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
+                                    <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
+                                        <label> Description: </label>
+                                    </div>
+                                    <textarea name="description" class="form-control" rows="3"></textarea>
                                 </div>
-                                <input id="status" type="text" class="form-control" style="width: 100%; text-align: right">
-                                </input>
-                            </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
-                                <label> Acceptance Criteria: </label>
-                                <div style="padding-top: 5px">
-                                    <input id="acceptanceCriteria" type="text" class="form-control" style="width: 100%;">
-                                    </input>
-                                </div>    
-                            </div>
-
-                            <div class="col-md-10 col-sm-10 col-xs-10" style="padding-left: 20px; padding-top: 10px">
-                                <label> Estimated Hours: </label>
-                                <div style="padding-top: 5px">
-                                    <input id="estimatedHours" type="text" class="form-control" style="width: 100%;">
-                                    </input>
+                                <div class="col-md-10 col-sm-10 col-xs-10" style="display: inline-flex; padding-top: 10px">
+                                    <div class="col-md-5 col-sm-5 col-xs-5" style="padding-top: 12px">
+                                        <label> Acceptance Criteria: </label>
+                                    </div>
+                                    <textarea name="acceptance_criteria" class="form-control" rows="3"></textarea>
                                 </div>
-                                
                             </div>
-
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button id="createActivity" type="button" class="btn btn-primary">Save</button>
-            </div>
+    
+                <div class="modal-footer">
+                    <input type="hidden" name="project_id"/>
+                    <button id="createActivity" type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    @push('scripts') 
-        <script>
-           var subproject_id , updated_activity_no;
-
-           $('#subproject').on('change',function(e){
-                subproject_id = $(this).val();
-               
-                $.ajax({
-                    type:'GET',
-                    url:'/api/activity?subproject_id=' + subproject_id,
-                    data:{},
-                    success:function(data) {
-                        $('#activity_no').val(1);
-
-                        if (data.data.length) {
-                            var recent_activity = Object.keys(data.data).pop();
-                            updated_activity_no = parseInt(data.data[recent_activity]['activity_no']) + 1;
-                            $('#activity_no').val(updated_activity_no);
-                        }
-                    }
-                });
-            });
-
-            $('#createActivity').on('click', function(e){
-                var description = $('#description').val();
-                var title = $('#title').val();
-                var status = $('#status').val();
-                var acceptanceCriteria = $('#acceptanceCriteria').val();
-                var estimatedHours = parseInt($('#estimatedHours').val());
-                var employeeId = 1
-
-                $.ajax({
-                    type:'POST',
-                    url:'/api/activity',
-                    data:{
-                        subproject_id:subproject_id, 
-                        activity_no:updated_activity_no, 
-                        title:title,
-                        description:description,
-                        acceptance_criteria:acceptanceCriteria,
-                        estimated_hours:estimatedHours,
-                        status:status,
-                        employee_user_id:employeeId
-                    },
-                    success:function(data) {
-                        
-                    }
-                });
-               
-            })
-        </script>
-    @endpush  
-    
- 
-    

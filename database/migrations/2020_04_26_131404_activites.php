@@ -18,7 +18,7 @@ class Activites extends Migration
             $table->id()->autoIncrement();
             $table->unsignedBigInteger('subproject_id');
             $table->string('activity_no')->nullable()->default('');
-            $table->unsignedBigInteger('employee_user_id');
+            $table->unsignedBigInteger('employee_user_id')->default(0);
 
             $table->string('title')->nullable()->default('');
             $table->string('description')->nullable()->default('');
@@ -30,11 +30,6 @@ class Activites extends Migration
             $table->foreign('subproject_id', 'foreign_subproject')
                   ->references('id')
                   ->on('subprojects')
-                  ->onDelete('cascade');
-
-            $table->foreign('employee_user_id', 'foreign_user')
-                  ->references('id')
-                  ->on('users')
                   ->onDelete('cascade');
         });
     }
