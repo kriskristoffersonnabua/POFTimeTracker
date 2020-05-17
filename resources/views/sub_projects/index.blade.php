@@ -103,7 +103,8 @@
                                         <small>{{ $project->description}}</small>
                                     </td>
                                     <td>
-                                        <a href="{{url()->action('Admin\ActivitiesController@index', ['subproject_id' => $project->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View Activities </a>
+                                        <a href="{{url()->action('Admin\ActivitiesController@index', ['project_id' => $project->project_id, 'subproject_id' => $project->id])}}" 
+                                            class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View Activities </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
                                         <a href="{{url()->action('Admin\SubProjectController@assign', ['id' => $project->id])}}" 
@@ -112,7 +113,7 @@
                                             data-project_no="{{$project->subproject_no}}" 
                                             data-name="{{$project->subproject_name}}" 
                                             data-user_id="{{$project->user_id}}" 
-                                            class="btn btn-warning btn-sm assignSubProject" data-toggle="modal" data-target=".assign-modal">
+                                            class="btn btn-warning btn-xs assignSubProject" data-toggle="modal" data-target=".assign-modal">
                                             <i class="fa fa-check"></i> Assign 
                                         </a>
                                         <a href="{{url()->action('Admin\SubProjectController@update', ['id' => $project->id])}}" 
@@ -121,10 +122,12 @@
                                             data-project_no="{{$project->subproject_no}}" 
                                             data-name="{{$project->subproject_name}}" 
                                             data-description="{{$project->description}}" 
-                                            class="btn btn-info btn-sm updateSubProject" data-toggle="modal" data-target=".add-sub-modal">
+                                            class="btn btn-info btn-xs updateSubProject" data-toggle="modal" data-target=".add-sub-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="{{url()->action('Admin\SubProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
+                                        <a href="{{url()->action('Admin\SubProjectController@destroy', ['id' => $project->id])}}" 
+                                            data-id="{{$project->id}}" class="btn btn-danger btn-xs deleteProject" data-toggle="modal" 
+                                            data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
                                         @endif 

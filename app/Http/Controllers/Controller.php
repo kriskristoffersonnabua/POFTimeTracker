@@ -43,7 +43,8 @@ class Controller extends BaseController
         $user = $request->user();
 
         if (!$user) {
-            throw new AuthenticationException('Unauthenticated.', 401);
+            // throw new AuthenticationException('Unauthenticated.', 401);
+            return redirect()->guest(route('/'));
         }
         
         return $user;

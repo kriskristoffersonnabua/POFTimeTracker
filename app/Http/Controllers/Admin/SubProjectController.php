@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\SubProject;
+use App\Models\Projects\Projects;
 use App\Models\Projects\SubProjects;
 use App\Models\Projects\SubprojectEmployees;
 use App\Models\Auth\User\User;
@@ -18,6 +18,16 @@ class SubProjectController extends Controller
     const DEFAULT_LIMIT = 10; 
 
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -29,26 +39,20 @@ class SubProjectController extends Controller
         $params = $request->all();
         $subprojects = [];
 
-        $filters = [
-            'id'            => $request->get('id'),
-            'subproject_no' => $request->get('subproject_no'),
-            'name'          => $request->get('name'),
-            'project_id'    => $request->get('project_id'),
-            'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
-            'offset'        => $request->get('limit') ?? self::DEFAULT_LIMIT
-        ];
-        
-        $subproject_response = $this->requestAPI('/api/subprojects', 'GET', $filters);
-        
-        if ($subproject_response->success) {
-            $subprojects = $subproject_response->data;
-        }
+        // $filters = [
+        //     'id'            => $request->get('id'),
+        //     'subproject_no' => $request->get('subproject_no'),
+        //     'name'          => $request->get('name'),
+        //     'project_id'    => $request->get('project_id'),
+        //     'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
+        //     'offset'        => $request->get('limit') ?? self::DEFAULT_LIMIT
+        // ];
 
-        $project_response = $this->requestAPI('/api/projects', 'GET');
+        $projects = Projects::all();
+        $subprojects = SubProjects::all();
 
-        $projects = [];
-        if ($project_response->success) {
-            $projects = $project_response->data->projects;
+        if($request->get('project_id')) {
+            $subprojects = SubProjects::where('project_id', $request->get('project_id'))->get();
         }
 
         $users = User::with('roles')->sortable(['email' => 'asc'])->get();
@@ -144,7 +148,14 @@ class SubProjectController extends Controller
             'description'   => $request->get('description')
         ];
 
-        $response = $this->requestAPI("/api/subprojects/${id}", 'PATCH', $params);
+        $subproject = SubProjects::find($id);
+
+        if (!isset($subproject)) {
+            throw new \Exception("Subproject not existing", 404);
+        }
+
+        $subproject->update($params);
+        $subproject->save();
 
         return Redirect::action('Admin\SubProjectController@index',['project_id' => $request->get('project_id')]);
 
@@ -160,27 +171,28 @@ class SubProjectController extends Controller
     {
         $user = $this->getAuthenticatedUser($request);
 
-        $request = Request::create("/api/subprojects/${id}", 'DELETE', [
-            'headers' => [
-                'Accept'        => 'application/json'
-            ],
-        ]);
+        $subproject = SubProjects::find($id);
 
-        $response = Route::dispatch($request);
+        if (!isset($subproject)) {
+            throw new \Exception("Subproject not existing", 404);
+        }
+        $subproject->delete();
 
-        return $response;
     }
 
     public function getNextSubProjectNo(Request $request) {
-        $next = "";
+        $params = $request->all();
 
-        $subproject_no_response = $this->requestAPI('/api/subprojects/subproject_no', 'GET', ['project_id' => $request->get('project_id')]);
+        $subproject = SubProjects::where('project_id', $params['project_id'])->orderBy('subproject_no','desc')->first();
         
-        if ($subproject_no_response->success) {
-            $next = $subproject_no_response->data->subproject_no;
+        $project = Projects::where('id',$params['project_id'])->first();
+        $next_subproject_no = $project->project_no . '-1';
+        if ($subproject) {
+            $last_subproject_no = intval(str_replace($project->project_no . '-','',$subproject->subproject_no));
+            $next_subproject_no = $project->project_no .'-' . ($last_subproject_no + 1);
         }
 
-        return $next;
+        return $next_subproject_no;
     }
 
     public function getAssignedEmployees(Request $request) {

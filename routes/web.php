@@ -48,7 +48,7 @@ Route::group(['namespace' => 'Auth'], function () {
 /**
  * Backend routes
  */
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['admin','web']], function () {
 
     // Dashboard
     Route::get('/', 'DashboardController@index')->name('dashboard');
@@ -77,6 +77,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/activities/{id}', 'ActivitiesController@show')->name('activities.show');
     Route::patch('/activities/{id}', 'ActivitiesController@update')->name('activities.update');
     Route::delete('/activities/{id}', 'ActivitiesController@destroy')->name('activities.destroy');
+    Route::post('/activities/{id}/assign', 'ActivitiesController@assign')->name('activities.assign');
+    Route::patch('/activities/{id}/done', 'ActivitiesController@done')->name('activities.done');
     
     //Users
     Route::get('users', 'UserController@index')->name('users');

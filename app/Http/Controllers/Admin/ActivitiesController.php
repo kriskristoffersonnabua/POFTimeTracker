@@ -11,6 +11,7 @@ use App\Models\Activity\Activity;
 use App\Models\Activity\ActivityTBAS;
 use App\Models\Activity\ActivityFile;
 use App\Models\Activity\ActivityComments;
+use App\Models\Auth\User\User;
 use \Illuminate\Support\Facades\Route;
 use App\Traits\ApiHelper;
 use Redirect;
@@ -20,6 +21,17 @@ use Carbon\Carbon;
 class ActivitiesController extends Controller
 {
     use ApiHelper;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,12 +47,14 @@ class ActivitiesController extends Controller
         if($request->get('subproject_id')) {
             $activity = Activity::where('subproject_id', $request->get('subproject_id'))->get();
         }
+        $users = User::with('roles')->sortable(['email' => 'asc'])->get();
 
         return view('activities.index' , 
             [
                 "activities"  => $activity, 
                 "subprojects" => $subproject,
-                "projects"    => $project
+                "projects"    => $project,
+                "users"       => $users
             ]
         );
     }
@@ -163,6 +177,50 @@ class ActivitiesController extends Controller
                     }
                 }
             }
+
+            return Redirect::action('Admin\ActivitiesController@index',['project_id' => $params['project_id'], 'subproject_id' => $params['subproject_id']]);
+
+        } catch(\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+    }
+    
+    public function done(Request $request, $id)
+    {
+        try {
+        
+            $params = $request->all();
+
+            $new_activity = Activity::find($id);
+            $new_activity->status = 'ready_for_testing';
+            $new_activity->save();
+
+        } catch(\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Activities  $activities
+     * @return \Illuminate\Http\Response
+     */
+    public function assign(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'employee_user_id' => 'required',
+                'estimated_hours' => 'required'
+            ]);
+        
+            $params = $request->all();
+
+            $new_activity = Activity::find($id);
+            $new_activity->employee_user_id = $params['employee_user_id'];
+            $new_activity->estimated_hours = $params['estimated_hours'];
+            $new_activity->save();
 
             return Redirect::action('Admin\ActivitiesController@index',['project_id' => $params['project_id'], 'subproject_id' => $params['subproject_id']]);
 

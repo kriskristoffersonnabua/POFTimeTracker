@@ -8,6 +8,7 @@
             </div>
 
             <form id="assignSubProjectForm">
+                @csrf
                 <div class="modal-body">
 
                     <div style="padding: 10px">

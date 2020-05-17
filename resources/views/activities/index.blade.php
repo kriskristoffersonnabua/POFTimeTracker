@@ -140,13 +140,27 @@
                                         >
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="#" class="btn btn-dark btn-xs" data-toggle="modal" data-target=".assign-activity-modal">
+                                        <a class="btn btn-dark btn-xs assignActivity" data-toggle="modal" 
+                                            data-target=".assign-activity-modal"
+                                            data-activity_no="{{$activity->activity_no}}"
+                                            data-activity_title="{{$activity->title}}"
+                                            data-employee_user_id="{{$activity->employee_user_id}}"
+                                            data-estimated_hours="{{$activity->estimated_hours}}"
+                                            href="{{url()->action('Admin\ActivitiesController@assign', ['id' => $activity->id])}}" 
+                                        >
                                             <i class="fa fa-check"></i> Assign 
                                         </a>
-                                        <a href="#" class="btn btn-success btn-xs">
+                                        @if($activity->status == "done")
+                                        <a href="{{url()->action('Admin\ActivitiesController@done', ['id' => $activity->id])}}" 
+                                            class="btn btn-success btn-xs doneActivity"
+                                            data-subproject_id="{{$activity->subprojects->id}}"
+                                            data-project_id="{{$activity->subprojects->project_id}}"
+                                        >
                                             <i class="fa fa-thumbs-up"></i> For Testing 
                                         </a>
-                                        <a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".delete-modal">
+                                        @endif
+                                        <a href="{{url()->action('Admin\ActivitiesController@destroy', ['id' => $activity->id])}}" data-id="{{$activity->id}}"  
+                                            class="btn btn-danger btn-xs deleteActivity" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
                                         {{-- @endif --}}
@@ -176,7 +190,7 @@
         </div>
 
         <div class="modal fade assign-activity-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            @include('modals.assign-activity-modal')
+            @include('modals.assign-activity-modal', ['users' => $users])
         </div>
 
         <!---- End of Modals ---->
@@ -241,6 +255,70 @@
                     value:"PATCH"
                 }).appendTo('#activityForm');
             });
+
+            $(document).on('click','.assignActivity',function(event){
+
+                project_id =  $('#subproject').find('option:selected').data('project_id');
+
+                event.preventDefault();
+                selected = $(this);
+
+                
+                $('#assignActivityForm').attr('action', selected.attr('href'));
+                $('#assignActivityForm').attr('method', "POST");
+                $('#assignActivityForm').find('.activity_no').text(selected.data('activity_no'));
+                $('#assignActivityForm').find('.activity_title').text(selected.data('activity_title'));
+                $('#assignActivityForm').find('input[name="employee_user_id"]').val(selected.data('employee_user_id'));
+                $('#assignActivityForm').find('input[name="estimated_hours"]').val(selected.data('estimated_hours'));
+                $('#assignActivityForm').find('input[name="project_id"]').val(project_id);
+                $('#assignActivityForm').find('input[name="subproject_id"]').val($('#subproject').val());
+            });
+
+            $(document).on('click','.doneActivity',function(){
+                event.preventDefault();
+                selected = $(this);
+                let do_refresh = false;
+                $.ajax({
+                    method: "PATCH",
+                    url: selected.attr('href'),
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id":selected.attr('data-id')
+                    },
+                    success: function (data, status, xhr) {
+                        // if(data.success)
+                            location.reload();
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
+            });
+
+            $(document).on('click','.deleteActivity',function(event){
+                event.preventDefault();
+                selected = $(this);
+            });
+
+            $(document).on('click','#confirmDelete',function(){
+                event.preventDefault();
+                let do_refresh = false;
+                $.ajax({
+                    method: "DELETE",
+                    url: selected.attr('href'),
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id":selected.attr('data-id')
+                    },
+                    success: function (data, status, xhr) {
+                        if(data.success)
+                            location.reload();
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
+            });
         });
 
         function getActivityNo() {
@@ -256,7 +334,7 @@
                 },
                 success: function (data, status, xhr) {
                     $("#activity_no").val(data);
-                    $("#activityForm").find('input[name="project_id"]').val();
+                    $("#activityForm").find('input[name="project_id"]').val(project_id);
                 }
             });
         }

@@ -89,13 +89,19 @@
                                         <small>{{ $project->description}}</small>
                                     </td>
                                     <td>
-                                        <a href="{{url()->action('Admin\SubProjectController@index', ['project_id' => $project->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i> View SubProjects </a>
+                                        <a href="{{url()->action('Admin\SubProjectController@index', ['project_id' => $project->id])}}" 
+                                            class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View SubProjects </a>
 
                                         @if(auth()->user()->hasRole('administrator'))
-                                        <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" data-description="{{$project->description}}" class="btn btn-info btn-sm updateProject" data-toggle="modal" data-target=".add-modal">
+                                        <a href="{{url()->action('Admin\ProjectController@update', ['id' => $project->id])}}" 
+                                            data-id="{{$project->id}}" data-project_no="{{$project->project_no}}" data-name="{{$project->name}}" 
+                                            data-description="{{$project->description}}" class="btn btn-info btn-xs updateProject" 
+                                            data-toggle="modal" data-target=".add-modal">
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="{{url()->action('Admin\ProjectController@destroy', ['id' => $project->id])}}" data-id="{{$project->id}}" class="btn btn-danger btn-sm deleteProject" data-toggle="modal" data-target=".delete-modal">
+                                        <a href="{{url()->action('Admin\ProjectController@destroy', ['id' => $project->id])}}" 
+                                            data-id="{{$project->id}}" class="btn btn-danger btn-xs deleteProject" data-toggle="modal" 
+                                            data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
                                         @endif 
