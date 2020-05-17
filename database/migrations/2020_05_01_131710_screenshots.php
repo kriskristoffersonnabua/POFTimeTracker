@@ -20,6 +20,7 @@ class Screenshots extends Migration
             $table->unsignedBigInteger('time_history_id');
                         
             $table->binary('screenshot')->nullable()->default(null);
+            $table->string('screenshot_filename')->nullable()->default(null);
             $table->timestamp('date_added')->nullable()->default(null);
             $table->timestamps();
 

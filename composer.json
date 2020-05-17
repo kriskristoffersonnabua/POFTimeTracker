@@ -9,6 +9,7 @@
         "php": ">=7.2.5",
         "albertcht/invisible-recaptcha": "^1.9",
         "arcanedev/log-viewer": "^7.0",
+        "barryvdh/laravel-dompdf": "^0.8.6",
         "creativeorange/gravatar": "^1.0",
         "davejamesmiller/laravel-breadcrumbs": "^5.2",
         "fruitcake/laravel-cors": "^1.0",

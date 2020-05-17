@@ -39,7 +39,7 @@
                         
                         <div class="title_right">
                             <div class="col-md-1 col-sm-1 col-xs-1 form-group pull-right">
-                                <button class="btn btn-dark" type="button">Export</button>
+                                <a class="btn btn-dark exportButton" type="button" href="{{url()->action('Admin\ReportsController@export', ['project_id' => $project_id, 'subproject_id' => $subproject_id, 'user_id' => $user_id, 'date_from' => $date_from, 'date_to' => $date_to])}}">Export</a>
                             </div>
                         <div class="clearfix"></div>
                         </div>
@@ -247,7 +247,6 @@
                 let employeeID = $(this).val();
                 updateQueryStringParam('user_id', employeeID);
             });
-
         });
 
     </script>

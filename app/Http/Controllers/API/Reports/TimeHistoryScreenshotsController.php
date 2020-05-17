@@ -34,7 +34,7 @@ class TimeHistoryScreenshotsController extends Controller
                 foreach($response as $idx => $screenshot) {
                     unset($response[$idx]['screenshot']);
                 }
-                return $this->sendResponse($response, "Project/s fetched.");
+                return $this->sendResponse($response, "Screenshots/s fetched.");
             } else {
                 throw new \Exception('Query not supported', 422);
             }
@@ -75,6 +75,7 @@ class TimeHistoryScreenshotsController extends Controller
             $screenshot = new Screenshots;
             $screenshot->time_history_id = $data['time_history_id'];
             $screenshot->screenshot = $data['screenshot'];
+            $screenshot->screenshot_filename = $data['screenshot_filename'];
             $screenshot->date_added = Carbon::now();
             $screenshot->save();
 
