@@ -193,6 +193,13 @@
                 $('#subProjectForm').find('input[name=_method]').remove();
             });
 
+            $(document).on('change','#subproject-select',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#subproject_no').val(getSubProjNo(selected.val()));
+            });
+
             $(document).on('click','.updateSubProject',function(event){
                 event.preventDefault();
                 selected = $(this);
@@ -273,9 +280,10 @@
         function getAssignedEmployees(subproject_id) {
             $.ajax({
                 method: "GET",
-                url: "{{url()->action('Admin\SubProjectController@getNextSubProjectNo', ['id' => " + subproject_id + "])}}",
+                url: "{{url()->action('Admin\SubProjectController@getAssignedEmployees')}}",
                 data: {
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    "subproject_id": subproject_id
                 },
                 success: function (data, status, xhr) {
                     if( data.length > 0 ) {

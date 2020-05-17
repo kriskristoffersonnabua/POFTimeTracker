@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\SubProject;
+use App\Models\Projects\SubProjects;
+use App\Models\Projects\SubprojectEmployees;
 use App\Models\Auth\User\User;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 use Redirect;
 
 class SubProjectController extends Controller
@@ -78,27 +81,38 @@ class SubProjectController extends Controller
 
     public function assign(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser($request);
+        try {
 
-        $update_response = $this->requestAPI("/api/subprojects/${id}", 'PATCH', ['user_id', $request->get('user->id')]);
+            $user = $this->getAuthenticatedUser($request);
 
-        $unassign_response = $this->requestAPI("/api/subprojects/unassign-employee", 'POST', ['subproject_id', $id]);
+            $params = $request->all();
 
-        $employees = $request->get('employees');
+            $subproject = SubProjects::find($id);
 
-        foreach( $employees as $employee ){
+            if (!isset($subproject)) {
+                throw new \Exception("Subproject not existing", 404);
+            }
+            $subproject->user_id = $params['user_id'];
+            $subproject->save();
 
-            $params = [
-                'emp_user_id'         => $employee,
-                'subproject_id'      => $request->get('subproject_id')
-            ];
+            $subprojectEmployee = SubprojectEmployees::where("subproject_id", $id);
+            $subprojectEmployee->delete();
 
-            $response = $this->requestAPI('/api/subprojects/assign-employee', 'POST', $params);
+            foreach( $params['employees'] as $employee ){
+
+                $subprojectEmployee = new SubprojectEmployees;
+                $subprojectEmployee->emp_user_id = (int) $employee;
+                $subprojectEmployee->subproject_id = (int) $id;
+                $subprojectEmployee->assigned_date = Carbon::now();
+                $subprojectEmployee->created_at = Carbon::now();
+                $subprojectEmployee->updated_at = Carbon::now();
+                $subprojectEmployee->save();
+            }
+
+            return Redirect::action('Admin\SubProjectController@index',['project_id' => $params['project_id']]);
+        } catch(\Exception $e) {
+            throw new \Exception($e.getMessage(), $e->getCode());
         }
-
-        dd( $request->all(), $update_response, $unassign_response, $response, 'exit');
-
-        return Redirect::action('Admin\SubProjectController@index',['project_id' => $request->get('project_id')]);
     }
 
     /**
@@ -156,15 +170,10 @@ class SubProjectController extends Controller
         return $next;
     }
 
-    public function getAssignedEmployees(Request $request, $id) {
+    public function getAssignedEmployees(Request $request) {
 
-        $assigned_emp_response = $this->requestAPI('/api/subprojects/employees', 'GET', ['subproject_id', $id]);
+        $subprojectEmployee = SubprojectEmployees::where("subproject_id", $request->get('subproject_id'));
 
-        $employees = [];
-        if ($assigned_emp_response->success) {
-            $employees = $assigned_emp_response->data->subproject_employees;
-        }
-
-        return $employees;
+        return $subprojectEmployee->get()->toArray();
     }
 }

@@ -94,13 +94,13 @@ Route::middleware('api')->group(function () {
     });        
     
     Route::group(['prefix' => '/subprojects'], function () {
-        Route::post('/assign-employee', 'API\Employees\SubprojectEmployeesController@assignBatchEmployees');
-        Route::post('/unassign-employee', 'API\Employees\SubprojectEmployeesController@unassignSubprojectEmployee');
-        Route::get('/employees', 'API\Employees\SubprojectEmployeesController@index');
-        Route::get('/employees/count', 'API\Employees\SubprojectEmployeesController@count');
+        Route::post('/assign-employee', 'API\Projects\SubprojectEmployeesController@assignBatchEmployees');
+        Route::post('/unassign-employee', 'API\Projects\SubprojectEmployeesController@unassignSubprojectEmployee');
+        Route::get('/employees', 'API\Projects\SubprojectEmployeesController@index');
+        Route::get('/employees/count', 'API\Projects\SubprojectEmployeesController@count');
         Route::group(['prefix' => '/employees/{id}'], function () {
-            Route::get('/', 'API\Employees\SubprojectEmployeesController@show');
-            Route::patch('/', 'API\Employees\SubprojectEmployeesController@update');
+            Route::get('/', 'API\Projects\SubprojectEmployeesController@show');
+            Route::patch('/', 'API\Projects\SubprojectEmployeesController@update');
         });
     });
 
