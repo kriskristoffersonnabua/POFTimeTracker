@@ -3,13 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Traits\DataConverterHelper;
 use App\Project;
+use App\Models\Projects\Projects;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Route;
+use App\Traits\ApiHelper;
 use Redirect;
 
 class ProjectController extends Controller
 {
+    use ApiHelper, DataConverterHelper;
+
     const DEFAULT_OFFSET = 0;
     const DEFAULT_LIMIT = 10; 
 
@@ -20,31 +27,40 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $this->getAuthenticatedUser($request);
-
         $filters = [
-            'id'            => $request->get('id'),
+            'id'            => $this->convertCommaSeparated($request->get('id')),
+            'created_at'    => $this->convertDateRange($request->get('created_at')),
+            'updated_at'    => $this->convertDateRange($request->get('updated_at')),
             'project_no'    => $request->get('project_no'),
             'name'          => $request->get('name'),
-            'offset'        => $request->get('offset') ?? self::DEFAULT_OFFSET,
-            'limit'        => $request->get('limit') ?? self::DEFAULT_LIMIT
         ];
-        
-        $project_response = $this->requestAPI('/api/projects', 'GET', $filters);
 
-        $projects = [];
-        if ($project_response->success) {
-            $projects = $project_response->data->projects;
-            $count = $project_response->data->count;
-        }
+        $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
+        $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
+
+        $filters = array_remove_null($filters);
+        $query = $this->buildQuery($filters);
+
+        $count = $query->count();
+
+        $query = $query->offset($offset);
+        $query = $query->limit($limit);
+
+        $projects = $query->get();
 
         $next = "";
-        $project_no_response = $this->requestAPI('/api/projects/project_no', 'GET');
 
-        if ($project_no_response->success) {
-            $next = $project_no_response->data->project_no;
+        $project = app(Projects::class)->orderBy('project_no','desc')->first();
+
+        $next_project_no = '000001';
+        if ($project) {
+            $last_project_no = intval($project->project_no);
+            $next_project_no = str_pad($last_project_no + 1,6,"0",STR_PAD_LEFT);
         }
-        return view('projects.index', compact(['projects', 'count', 'next']));
+
+        $next = $next_project_no;
+
+        return view('projects.index', compact(['projects', 'next']));
     }
 
     /**
@@ -54,15 +70,23 @@ class ProjectController extends Controller
      */
     public function create(Request $request)
     {
-        $user = $this->getAuthenticatedUser($request);
+        $request->validate([
+            'project_no'    =>  'required',
+            'name'          =>  'required',
+            'description'   =>  'required'
+        ]);
 
-        $params = [
-            'project_no'    => $request->get('project_no'),
-            'name'          => $request->get('name'),
-            'description'   => $request->get('description')
-        ];
+        $project_no     =   $request->get('project_no');
+        $name           =   $request->get('name');
+        $description    =   $request->get('description');
 
-        $request = $this->requestAPI('/api/projects', 'POST', $params);
+        $project = new Projects;
+        $project->project_no = $project_no;
+        $project->name = $name;
+        $project->description = $description;
+        $project->created_at = Carbon::now();
+        $project->updated_at = Carbon::now();
+        $project->save();
 
         return Redirect::action('Admin\ProjectController@index');
     }
@@ -76,14 +100,15 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser($request);
-
-        $params = [
+        $data = [
+            'project_no'    => $request->get('project_no'),
             'name'          => $request->get('name'),
             'description'   => $request->get('description')
         ];
-
-        $request = $this->requestAPI("/api/projects/${id}", 'PATCH', $params);
+        
+        $project = app(Projects::class)->findOrFail($id);
+        $project->update($data);
+        $project->save();
 
         return Redirect::action('Admin\ProjectController@index');
     }
@@ -96,10 +121,40 @@ class ProjectController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser($request);
+        $project = app(Projects::class)->findOrFail($id);
 
-        $response = $this->requestAPI("/api/projects/${id}", 'DELETE');
+        if (!$project->subprojects()->exists()) {
+            $project = $project->delete();
+        }
+        
+        return Redirect::action('Admin\ProjectController@index');
+    }
 
-        return $response;
+    protected function buildQuery($filters) {        
+        $dateFields = ['created_at', 'updated_at'];
+
+        $query = app(Projects::class);
+        foreach ($filters as $key => $value) {
+            if (in_array($key, $dateFields)) {
+                if (count($value) == 1) {
+                    extract($this->convertDateFormat($value)[0]);
+                    $query = $query->whereRaw(DB::raw("$key $comparison ?"));
+                    $bindings[] = $date;
+                } elseif (count($value) == 2) {
+                    $query = $query->whereRaw(DB::raw("($key BETWEEN ? AND ?)"));
+                    $bindings[] = $value[0];
+                    $bindings[] = $value[1];
+                }
+                $query = $query->addBinding($bindings, 'where');
+            } elseif (is_array($value)) {
+                $query = $query->whereIn($key, $value);
+            } elseif (is_int($value)) {
+                $query = $query->where($key, $value);
+            } else {
+                $query = $query->whereRaw(DB::raw("$key LIKE ?"));
+                $query = $query->addBinding("%$value%", 'where');
+            }
+        }
+        return $query;
     }
 }
