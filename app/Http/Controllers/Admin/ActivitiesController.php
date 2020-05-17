@@ -123,6 +123,7 @@ class ActivitiesController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $fileStorageUtility = app(FileStorageUtility::class);
             $request->validate([
                 'subproject_id' => 'required',
                 'activity_no' => 'required',
@@ -154,15 +155,17 @@ class ActivitiesController extends Controller
                     }
                 }
             }
-            dd($request->file('file'));
             if(!empty($request->file('file'))) {
                 ActivityFile::where('activity_id', $id)->delete();
                 foreach( $request->file('file') as $file ){
                     if($file){
+                        $filePath = $file->getClientOriginalName();
+                        $fileStorageUtility->uploadOrGetFileFromS3($filePath, file_get_contents($file));
+
                         $new_file = new ActivityFile;
                         $new_file->activity_id = $new_activity->id;
-                        $new_file->file = base64_encode(file_get_contents($file));
-                        $new_file->file_link = $file->getClientOriginalName();
+                        $new_file->file = null;
+                        $new_file->file_link = $filePath;
                         $new_file->date_added = Carbon::now();
                         $new_file->created_at = Carbon::now();
                         $new_file->updated_at = Carbon::now();
