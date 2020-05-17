@@ -14,12 +14,12 @@ class FileStorageUtility
      *
      * @return Array
      */
-    public function uploadOrGetFileFromS3($file)
+    public function uploadOrGetFileFromS3($file_path, $content)
     {
-        if (!Storage::disk('s3')->exists($file)) {
-            return Storage::disk('s3')->put($file);
+        if (!Storage::disk('s3')->exists($file_path)) {
+            return Storage::disk('s3')->put($file_path, $content);
         }
-        return Storage::disk('s3')->get($file);
+        return Storage::disk('s3')->get($file_path);
     }
 
     /**
@@ -29,9 +29,9 @@ class FileStorageUtility
      *
      * @return Array
      */
-    public function deleteFromS3($file)
+    public function deleteFromS3($file_path)
     {
-        return Storage::disk('s3')->delete($file);
+        return Storage::disk('s3')->delete($file_path);
     }
 
     /**
@@ -41,8 +41,8 @@ class FileStorageUtility
      *
      * @return Array
      */
-    public function updateFileFromS3($file)
+    public function updateFileFromS3($file_path, $content)
     {
-        return Storage::disk('s3')->put($file);
+        return Storage::disk('s3')->put($file_path, $content);
     }
 }

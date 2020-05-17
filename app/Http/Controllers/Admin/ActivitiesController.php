@@ -13,6 +13,8 @@ use App\Models\Activity\ActivityFile;
 use App\Models\Activity\ActivityComments;
 use \Illuminate\Support\Facades\Route;
 use App\Traits\ApiHelper;
+
+use App\Utilities\FileStorageUtility;
 use Redirect;
 
 use Carbon\Carbon;
@@ -20,6 +22,7 @@ use Carbon\Carbon;
 class ActivitiesController extends Controller
 {
     use ApiHelper;
+    
     /**
      * Display a listing of the resource.
      *
@@ -53,6 +56,7 @@ class ActivitiesController extends Controller
     public function create(Request $request)
     {
         try {
+            $fileStorageUtility = app(FileStorageUtility::class);
             $request->validate([
                 'subproject_id' => 'required',
                 'activity_no' => 'required',
@@ -87,10 +91,13 @@ class ActivitiesController extends Controller
             if(!empty($request->file('file'))) {
                 foreach( $request->file('file') as $file ){
                     if($file){
+                        $filePath = $file->getClientOriginalName();
+                        $fileStorageUtility->uploadOrGetFileFromS3($filePath, file_get_contents($file));
+
                         $new_file = new ActivityFile;
                         $new_file->activity_id = $new_activity->id;
-                        $new_file->file = base64_encode(file_get_contents($file));
-                        $new_file->file_link = $file->getClientOriginalName();
+                        $new_file->file = null;
+                        $new_file->file_link = $filePath;
                         $new_file->date_added = Carbon::now();
                         $new_file->created_at = Carbon::now();
                         $new_file->updated_at = Carbon::now();
@@ -147,7 +154,7 @@ class ActivitiesController extends Controller
                     }
                 }
             }
-
+            dd($request->file('file'));
             if(!empty($request->file('file'))) {
                 ActivityFile::where('activity_id', $id)->delete();
                 foreach( $request->file('file') as $file ){
