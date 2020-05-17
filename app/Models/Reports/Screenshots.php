@@ -29,5 +29,5 @@ class Screenshots extends Model
      *
      * @var string
      */
-    protected $fillable = ['screenshot', 'date_added', 'time_history_id'];
+    protected $fillable = ['screenshot', 'screenshot_filename', 'date_added', 'time_history_id'];
 }

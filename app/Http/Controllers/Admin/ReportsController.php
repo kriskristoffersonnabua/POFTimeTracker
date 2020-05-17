@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Reports;
 use App\Models\Auth\Role\Role;
 use App\Models\Auth\User\User;
-use Illuminate\Http\Request;
 use App\Models\Projects\Projects;
 use App\Models\Projects\SubProjects;
 use App\Models\Reports\TimeHistory;
+use Barryvdh\DomPDF\Facade as PDF;
+
+use Illuminate\Http\Request;
 
 class ReportsController extends Controller
 {
@@ -64,6 +66,50 @@ class ReportsController extends Controller
         $reports = $query->select('time_history.id', 'time_history.user_id', 'time_history.activity_id', 'time_history.date', 'time_history.time_start', 'time_history.time_end', 'time_history.time_consumed', 'projects.name')->get();
 
         return view('reports.index', compact(['reports', 'count', 'projects', 'subprojects', 'employees', 'user_id', 'project_id', 'subproject_id', 'date_from', 'date_to']));
+    }
+
+    /**
+     * Exports resource and download via pdf
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+        $user = $this->getAuthenticatedUser($request);
+
+        $project_id = $request->get('project_id');
+        $subproject_id = $request->get('subproject_id');
+        $user_id = $request->get('user_id');
+        $date_from = $request->get('date_from');
+        $date_to = $request->get('date_to');
+
+        $filters = [
+            'id'            => $request->get('id'),
+            'project_id'    => $project_id,
+            'user_id'       => $user_id,
+            'subproject_id' => $subproject_id,
+            'time_start'    => $request->get('time_start'),
+            'time_end'      => $request->get('time_end')
+        ];
+    
+        $filters = array_remove_null($filters);
+        $query = $this->buildQuery($filters);
+
+        $query = $query->offset($request->get('offset') ?? self::DEFAULT_OFFSET);
+        $query = $query->limit( $request->get('limit') ?? self::DEFAULT_LIMIT);
+        $query = $query->orderBy('time_history.id','desc');
+
+        $count = $query->count();
+
+        $reports = $query->select('time_history.id', 'time_history.user_id', 'time_history.activity_id', 'time_history.date', 'time_history.time_start', 'time_history.time_end', 'time_history.time_consumed', 'projects.name')->get()->toArray();
+        $pdf = PDF::loadView('reports.export', compact('reports'));
+        $exportFile = sys_get_temp_dir() . '/reports_export' . time(true);
+        file_put_contents($exportFile, $pdf->output());
+
+        return response()->download($exportFile, 'reports_export.pdf', [
+            'Content-Type' => 'application/pdf',
+        ])->deleteFileAfterSend(true);
+    
     }
 
     /**
