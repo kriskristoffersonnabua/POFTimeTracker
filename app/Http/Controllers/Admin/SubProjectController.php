@@ -65,17 +65,30 @@ class SubProjectController extends Controller
     {
         $user = $this->getAuthenticatedUser($request);
 
-        $params = [
-            'user_id'         => $user->id,
-            'project_id'      => $request->get('project_id'),
-            'subproject_no'   => $request->get('subproject_no'),
-            'subproject_name' => $request->get('subproject_name'),
-            'description'     => $request->get('description'),
-        ];
+        try {
+            $request->validate([
+                "project_id" => 'required',
+                "subproject_no" => 'required',
+                "subproject_name" => 'required',
+                "description" => 'required'
+            ]);
+            $params = $request->all();
 
-        $response = $this->requestAPI('/api/subprojects', 'POST', $params);
+            $new_subproject = new SubProjects;
+            $new_subproject->project_id = (int)$params['project_id'];
+            $new_subproject->subproject_no = $params['subproject_no'];
+            $new_subproject->subproject_name = $params['subproject_name'];
+            $new_subproject->user_id = 0;
+            $new_subproject->description = $params['description'];
 
-        return Redirect::action('Admin\SubProjectController@index',['project_id' => $request->get('project_id')]);
+            $new_subproject->save();
+
+            return Redirect::action('Admin\SubProjectController@index',['project_id' => $params['project_id']]);
+
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+        
     }
 
 
@@ -111,7 +124,7 @@ class SubProjectController extends Controller
 
             return Redirect::action('Admin\SubProjectController@index',['project_id' => $params['project_id']]);
         } catch(\Exception $e) {
-            throw new \Exception($e.getMessage(), $e->getCode());
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
     }
 

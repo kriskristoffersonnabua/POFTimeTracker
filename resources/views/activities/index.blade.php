@@ -47,19 +47,34 @@
     <div class="title_right">
         <div class="col-md-12 col-sm-12 filter-fields form-group row pull-right text-right">
             <label> Projects </label>
-            <select class="form-control">
-                @for ($i = 1; $i < 10 ; $i++)
-                    <option> Project 0000{{ $i }}</option>
-                @endfor
+            <select class="form-control" id="select-project">
+                @foreach ($projects as $project)
+                    <option {{ app('request')->input('project_id') == $project->id ? 'selected' : '' }} 
+                        value="{{$project->id}}">
+                        {{$project->project_no}} - {{$project->name}}
+                    </option>
+                @endforeach
             </select>
             <label> SubProjects </label>
-            <select class="form-control">
-                @for ($i = 1; $i < 10 ; $i++)
-                    <option> Sub Project 0000{{ $i }}</option>
-                @endfor
+            <select class="form-control" id="select-subproject">
+                @foreach ($subprojects as $project)
+                    @php $show = true @endphp
+                    @if(app('request')->input('project_id') != "" && app('request')->input('project_id') != $project->project_id)
+                        @php $show = false @endphp
+                    @endif
+
+                    @if($show) 
+                        <option {{ app('request')->input('subproject_id') == $project->id ? 'selected' : '' }} 
+                            value="{{$project->id}}" data-project_id="{{$project->project_id}}">
+                            {{$project->subproject_no}} - {{$project->subproject_name}}
+                        </option>
+                    @endif
+                @endforeach
             </select>
-            <button class="btn btn-success btn-sm" type="button" data-toggle="modal" 
-                data-target=".activity-form-modal" >
+            <button class="btn btn-success btn-sm addActivity" type="button" data-toggle="modal" 
+                data-target=".activity-form-modal"
+                data-href="{{url()->action('Admin\ActivitiesController@create')}}" 
+                data-method="POST" >
                     <span class="fa fa-plus"></span>
                     Add Activity
             </button>
@@ -88,17 +103,12 @@
                         <table id="datatable" class="table table-striped projects">
                             <thead>
                                 <tr>
-                                <th class="th-sm" style="width: 5%">Activity No.</th>
-                                <th class="th-sm">Title</th>
-                                <th class="th-sm">Sub Project Name</th>
-                                <th class="th-sm">Status</th>
-                                @if(auth()->user()->hasRole('administrator'))
-                                <th class="th-sm">Date Added</th>
-                                <th class="th-sm" style="width: 10%">Links</th>
-                                @else
-                                <th class="th-sm" style="width: 35%;">Links</th>
-                                @endif
-                                
+                                    <th class="th-sm" style="width: 5%">Activity No.</th>
+                                    <th class="th-sm">Title</th>
+                                    <th class="th-sm">SubProject</th>
+                                    <th class="th-sm">Status</th>
+                                    <th class="th-sm">Date Added</th>
+                                    <th class="th-sm"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,35 +119,37 @@
                                         <a>{{$activity->title}}</a>
                                     </td>
                                     <td>
-                                        Sub Project 101
+                                        {{$activity->subprojects->subproject_name}}
                                     </td>
                                     <td>
-                                        On Going
+                                        {{ucfirst(str_replace('_', ' ', $activity->status))}}
                                     </td>
-                                    @if(auth()->user()->hasRole('administrator'))
                                     <td>
-                                        Created 01.01.2015
+                                        {{date('m/d/Y', strtotime($activity->created_at))}}
                                     </td>
-                                    @endif
                                     <td>
 
-                                        <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".view-modal">
+                                        <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target=".view-modal">
                                             <i class="fa fa-folder"></i> View 
                                         </a>
-                                        @if(!auth()->user()->hasRole('administrator'))
-                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target=".activity-form-modal">
+                                        {{-- @if(!auth()->user()->hasRole('administrator')) --}}
+                                        <a href="{{url()->action('Admin\ActivitiesController@update', ['id' => $activity->id])}}" 
+                                            class="btn btn-info btn-xs updateActivity" data-toggle="modal" data-target=".activity-form-modal"
+                                            data-view="{{url()->action('Admin\ActivitiesController@show', ['id' => $activity->id])}}" 
+                                            data-id="{{$activity->id}}"
+                                        >
                                             <i class="fa fa-pencil"></i> Update 
                                         </a>
-                                        <a href="#" class="btn btn-dark btn-sm" data-toggle="modal" data-target=".assign-activity-modal">
+                                        <a href="#" class="btn btn-dark btn-xs" data-toggle="modal" data-target=".assign-activity-modal">
                                             <i class="fa fa-check"></i> Assign 
                                         </a>
-                                        <a href="#" class="btn btn-success btn-sm">
+                                        <a href="#" class="btn btn-success btn-xs">
                                             <i class="fa fa-thumbs-up"></i> For Testing 
                                         </a>
-                                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".delete-modal">
+                                        <a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".delete-modal">
                                             <i class="fa fa-trash-o"></i> Delete 
                                         </a>
-                                        @endif
+                                        {{-- @endif --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -159,7 +171,6 @@
         <div class="modal fade delete-modal" tabindex="-1" role="dialog" aria-hidden="true">
             @include('modals.delete-modal')
         </div>
-
         <div class="modal fade activity-form-modal" tabindex="-1" role="dialog" aria-hidden="true">
             @include('modals.activity-form-modal', ['subprojects' => $subprojects])
         </div>
@@ -179,6 +190,94 @@
     @parent
     {{ Html::script(mix('assets/admin/js/dashboard.js')) }}
 @endsection
+
+
+@push('scripts')
+    <script type="text/javascript">
+
+        var subproject_id , updated_activity_no;
+
+        $(document).ready(function(){
+            $("#select-project").change(function(){
+                window.location = "?project_id=" + $(this).val();
+            });
+
+            $("#select-subproject").change(function(){
+                window.location = "?project_id=" + $(this).find('option:selected').data('project_id') + "&subproject_id=" + $(this).val();
+            });
+
+           $('#subproject').on('change',function(e){
+                getActivityNo();
+            });
+
+            $(document).on('click','.addActivity',function(event){
+                event.preventDefault();
+                selected = $(this);
+                
+                $('#activityForm').attr('action', selected.attr('data-href'));
+                $('#activityForm').attr('method', selected.attr('data-method'));
+
+                $('#activityForm').find('input[type="text"]').val('');
+                $('#activityForm').find('input[type="file"]').val('');
+                $('#activityForm').find('textarea').text('');
+                $('#activityForm').find('input[name=_method]').remove();
+
+                getActivityNo();
+
+            });
+
+            $(document).on('click','.updateActivity',function(event){
+                event.preventDefault();
+                selected = $(this);
+
+                getActivityDetails(selected.data('view'));
+                
+                $('#activityForm').attr('action', selected.attr('href'));
+                $('#activityForm').attr('method', "POST");
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_method',
+                    value:"PATCH"
+                }).appendTo('#activityForm');
+            });
+        });
+
+        function getActivityNo() {
+            subproject_id = $('#subproject').val();
+            project_id =  $('#subproject').find('option:selected').data('project_id');
+            
+            $.ajax({
+                type:'GET',
+                url: "{{url()->action('Admin\ActivitiesController@getNextActivityNo')}}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "subproject_id":subproject_id
+                },
+                success: function (data, status, xhr) {
+                    $("#activity_no").val(data);
+                    $("#activityForm").find('input[name="project_id"]').val();
+                }
+            });
+        }
+
+        function getActivityDetails(link) {
+            
+            $.ajax({
+                type:'GET',
+                url: link,
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function (data, status, xhr) {
+                    console.log(data)
+                }
+            });
+        }
+
+    </script>
+@endpush
+
 
 @section('styles')
     @parent

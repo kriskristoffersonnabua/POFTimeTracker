@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Activities;
+namespace App\Http\Controllers\Api\Activity;
 
 use App\Traits\DataConverterHelper;
-use App\Models\Activities\ActivityFile;
+use App\Models\Activity\ActivityFile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
