@@ -51,10 +51,11 @@
                         </div>
 
                         <div class="col-md-2 col-sm-2 col-xs-2">
-                            <select class="form-control">
-                            @for ($i = 1; $i < 10 ; $i++)
-                                <option> Project 0000{{ $i }}</option>
-                            @endfor
+                            <select class="form-control projectSelect">
+                            <option value="" {{ ($project_id == '') ? 'selected' : '' }}>All projects</option>
+                            @foreach($projects as $project)
+                                <option value="{{$project['id']}}"  {{ ($project['id'] == $project_id) ? 'selected' : '' }}>{{$project['project_no']}}</option>
+                            @endforeach
                             </select>
                         </div>
 
@@ -63,10 +64,11 @@
                         </div>
                                     
                         <div class="col-md-2 col-sm-2 col-xs-2">
-                            <select class="form-control">
-                            @for ($i = 1; $i < 10 ; $i++)
-                                <option> Project 0000{{ $i }}</option>
-                            @endfor
+                            <select class="form-control subprojectSelect">
+                            <option value="" {{ ($subproject_id == '') ? 'selected' : '' }}>All subprojects</option>
+                            @foreach($subprojects as $subproject)
+                                <option value="{{$subproject['id']}}" {{ ($subproject['id'] == $subproject_id) ? 'selected' : '' }}>{{$subproject['subproject_no']}}</option>
+                            @endforeach
                             </select>
                         </div>
 
@@ -75,10 +77,11 @@
                         </div>
                                     
                         <div class="col-md-2 col-sm-2 col-xs-2">
-                            <select class="form-control">
-                            @for ($i = 1; $i < 10 ; $i++)
-                                <option> Project 0000{{ $i }}</option>
-                            @endfor
+                            <select class="form-control employeeSelect">
+                            <option value="" {{ ($user_id == '') ? 'selected' : '' }}>All employees</option>
+                            @foreach($employees as $employee)
+                                <option value="{{$employee['id']}}" {{ ($employee['id'] == $user_id) ? 'selected' : '' }}>{{$employee['first_name'].' '.$employee['last_name']}}</option>
+                            @endforeach
                             </select>
                         </div>
 
@@ -91,7 +94,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="text" name="date_from" value="{{$date_from}}" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -108,7 +111,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="text"name="date_to" value="{{$date_to}}" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -136,13 +139,13 @@
                             <tbody>
                                 @foreach($reports as $report)
                                 <tr>
-                                    <td style="width: 7%">{{$report->date}}</td>
-                                    <td> Pesamakini Backend UI </td>
-                                    <td>{{$report->employee->first_name.' '.$report->employee->last_name}}</td>
-                                    <td>{{$report->activity->title}}</td>
-                                    <td>{{$report->time_start}}</td>
-                                    <td>{{$report->time_end}}</td>
-                                    <td>{{$report->time_consumed}}hrs</td>
+                                    <td style="width: 7%">{{$report['date']}}</td>
+                                    <td>{{$report['name']}}</td>
+                                    <td>{{$report['employee']['first_name'].' '.$report['employee']['last_name']}}</td>
+                                    <td>{{$report['activity']['title']}}</td>
+                                    <td>{{$report['time_start']}}</td>
+                                    <td>{{$report['time_end']}}</td>
+                                    <td>{{$report['time_consumed']}}hrs</td>
                                     <td>
                                         <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".screenshot-modal">
                                             <i class="fa fa-check"></i> View Screenshot 
@@ -152,6 +155,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        @if ($count === 0)
+                            <div>No results found</div>
+                        @endif 
                         </div>
 
                         <div class="pull-right" style="padding: 5px 10px 5px 10px">
@@ -189,3 +195,60 @@
     @parent
     {{ Html::style(mix('assets/admin/css/dashboard.css')) }}
 @endsection
+
+
+@push('scripts')
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            var updateQueryStringParam = function (key, value) {
+                var baseUrl = [location.protocol, '//', location.host, location.pathname].join(''),
+                    urlQueryString = document.location.search,
+                    newParam = key + '=' + value,
+                    params = '?' + newParam;
+
+                // If the "search" string exists, then build params from it
+                if (urlQueryString) {
+                    keyRegex = new RegExp('([\?&])' + key + '[^&]*');
+
+                    // If param exists already, update it
+                    if (urlQueryString.match(keyRegex) !== null) {
+                        params = urlQueryString.replace(keyRegex, "$1" + newParam);
+                    } else { // Otherwise, add it to end of query string
+                        params = urlQueryString + '&' + newParam;
+                    }
+                }
+                window.history.replaceState({}, "", baseUrl + params);
+                window.history.go();
+            };
+            $(document).on('change','input[name=date_from]',function(event){
+                event.preventDefault();
+                let date_from = $(this).val();
+                updateQueryStringParam('date_from', date_from);
+            });
+            $(document).on('change','input[name=date_to]',function(event){
+                event.preventDefault();
+                let date_to = $(this).val();
+                updateQueryStringParam('date_to', date_to);
+            });
+            $(document).on('change','.projectSelect',function(event){
+                event.preventDefault();
+                let projectID = $(this).val();
+                updateQueryStringParam('project_id', projectID);
+            });
+            $(document).on('change','.subprojectSelect',function(event){
+                event.preventDefault();
+                let subprojectID = $(this).val();
+                updateQueryStringParam('subproject_id', subprojectID);
+            });
+            $(document).on('change','.employeeSelect',function(event){
+                event.preventDefault();
+                let employeeID = $(this).val();
+                updateQueryStringParam('user_id', employeeID);
+            });
+
+        });
+
+    </script>
+@endpush
