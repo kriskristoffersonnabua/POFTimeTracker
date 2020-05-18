@@ -94,7 +94,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text" name="date_from" value="{{$date_from}}" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="date" name="date_from" value="{{$date_from}}" class="form-control has-feedback-left" id="single_cal4" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                                            <input type="text"name="date_to" value="{{$date_to}}" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
+                                            <input type="date"name="date_to" value="{{$date_to}}" class="form-control has-feedback-left" id="single_cal3" placeholder="Date From" aria-describedby="inputSuccess2Status4">
                                             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                     </div>

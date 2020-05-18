@@ -10,7 +10,8 @@ use App\Models\Projects\Projects;
 use App\Models\Projects\SubProjects;
 use App\Models\Reports\TimeHistory;
 use Barryvdh\DomPDF\Facade as PDF;
-
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class ReportsController extends Controller
@@ -50,10 +51,11 @@ class ReportsController extends Controller
             'id'            => $request->get('id'),
             'project_id'    => $project_id,
             'user_id'       => $user_id,
-            'subproject_id' => $subproject_id,
-            'time_start'    => $request->get('time_start'),
-            'time_end'      => $request->get('time_end')
+            'subproject_id' => $subproject_id
         ];
+        if ($date_to && $date_from) {
+            $filters['date'] = [$date_from, $date_to];
+        }
     
         $filters = array_remove_null($filters);
         $query = $this->buildQuery($filters);
