@@ -9,6 +9,7 @@ use App\Models\Auth\User\User;
 use App\Models\Projects\Projects;
 use App\Models\Projects\SubProjects;
 use App\Models\Reports\TimeHistory;
+use App\Models\Reports\Screenshots;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use DB;
@@ -17,7 +18,7 @@ use Illuminate\Http\Request;
 class ReportsController extends Controller
 {
     const DEFAULT_OFFSET = 0;
-    const DEFAULT_LIMIT = 10; 
+    const DEFAULT_LIMIT = -1; 
 
     /**
      * Create a new controller instance.
@@ -111,7 +112,23 @@ class ReportsController extends Controller
         return response()->download($exportFile, 'reports_export.pdf', [
             'Content-Type' => 'application/pdf',
         ])->deleteFileAfterSend(true);
-    
+    }
+
+    public function getScreenshots(Request $request, $id) {
+        $user = $this->getAuthenticatedUser($request);
+        $timeHistory = app(TimeHistory::class);
+        $timeHistory = $timeHistory->joinProjectAndSubproject($timeHistory)->where('time_history.id', $id)->first();
+
+        $query = Screenshots::where('time_history_id', $id);
+
+        $offset = $request->get('offset') ?? self::DEFAULT_OFFSET;
+        $limit = $request->get('limit') ?? self::DEFAULT_LIMIT;
+        $query = $query->offset($offset);
+        $query = $query->limit($limit);
+
+        $screenshots = $query->get()->toArray();
+
+        return response()->json(['screenshots' => $screenshots, 'time_history' => $timeHistory]);
     }
 
     /**

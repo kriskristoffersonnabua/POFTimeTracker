@@ -147,7 +147,7 @@
                                     <td>{{$report['time_end']}}</td>
                                     <td>{{$report['time_consumed']}}hrs</td>
                                     <td>
-                                        <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".screenshot-modal">
+                                        <a href="#" class="btn btn-primary btn-sm viewScreenshot" data-href="{{url()->action('Admin\ReportsController@getScreenshots', ['id' => $report['id']])}}" data-reportId="{{$report['id']}}" data-toggle="modal" data-target=".screenshot-modal">
                                             <i class="fa fa-check"></i> View Screenshot 
                                         </a>
                                     </td>
@@ -222,6 +222,41 @@
                 window.history.replaceState({}, "", baseUrl + params);
                 window.history.go();
             };
+            $(document).on('click','.viewScreenshot',function(event){
+                event.preventDefault();
+                let selected = $(this);
+
+                $.ajax({
+                    method: "GET",
+                    url: selected.attr('data-href'),
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function (data, status, xhr) {
+                        if(data){
+                            $('#reportDate').text(data.time_history.date);
+                            $('#employeeName').text(data.time_history.employee.first_name+' '+data.time_history.employee.last_name);
+                            $('#projectName').text(data.time_history.name);
+                            $('#activityTitle').text(data.time_history.activity.title);
+                            $('#timeStart').text(data.time_history.time_start);
+                            $('#timeEnd').text(data.time_history.time_end);
+                            $('#timeConsumed').text(data.time_history.time_consumed);
+                            for(let i = 0; i < data.screenshots.length; i++) {
+                                $('#datatable > tbody').append("<tr><td>"+data.screenshots[i]['screenshot_filename']+"</td></tr>");
+                            }
+                            function clickHandler(e) {
+                                let screenshot = e.target.closest("td").innerHTML;
+                                $('.screenshot').text(screenshot);
+                            }
+                            document.querySelectorAll('#datatable td')
+                            .forEach(e => e.addEventListener("click", clickHandler));
+                        }
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
+            });
             $(document).on('change','input[name=date_from]',function(event){
                 event.preventDefault();
                 let date_from = $(this).val();

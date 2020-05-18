@@ -14,39 +14,39 @@
                         <div style="width: 800px;">
                             <div style="display: flex; padding-left: 20px;">
                                 <label> Date </label>
-                                <p style="padding-left: 15px"> 01/01/2001 </p>
+                                <p style="padding-left: 15px" id="reportDate"></p>
                             </div>
 
                             <div style="display: flex; padding-left: 20px;">
                                 <label> Employee Name: </label>
-                                <p style="padding-left: 15px"> Kim Yohan </p>
+                                <p style="padding-left: 15px" id="employeeName"></p>
                             </div>
 
                             <div style="display: flex; padding-left: 20px; ">
                                 <label> Project Name </label>
-                                <p style="padding-left: 15px"> Pesamakini Backend UI </p>
+                                <p style="padding-left: 15px" id="projectName"></p>
                             </div>
 
                             <div style="display: flex; 20px; padding-left: 20px; ">
                                 <label> Activity Title </label>
-                                <p style="padding-left: 15px"> Title of Activity </p>
+                                <p style="padding-left: 15px" id="activityTitle"></p>
                             </div>
                         </div>
 
                         <div style="width: 500px;">
                             <div style="display: flex; padding-left: 20px; ">
                                 <label> Time Start </label>
-                                <p style="padding-left: 15px"> 11:00 am </p>
+                                <p style="padding-left: 15px" id="timeStart"></p>
                             </div>
 
                             <div style="display: flex; padding-left: 20px; ">
                                 <label> Time End </label>
-                                <p style="padding-left: 15px"> 11:00 pm </p>
+                                <p style="padding-left: 15px" id="timeEnd"></p>
                             </div>
 
                             <div style="display: flex; padding-left: 20px; ">
                                 <label> Time Consumed </label>
-                                <p style="padding-left: 15px"> 12 hrs </p>
+                                <p style="padding-left: 15px" id="timeConsumed"></p>
                             </div>
                         </div>
                     </div>
@@ -56,17 +56,12 @@
                             <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 500px">
                                 <table id="datatable" class="table table-striped projects">
                                     <tbody>
-                                        @for($i = 0; $i < 20 ; $i++)
-                                        <tr>
-                                            <td> Screenshot_0000{{$i}}.jpg </td>
-                                        </tr>
-                                        @endfor
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div class="x_panel" style="margin-right: 5px">
+                        <div class="x_panel screenshot" style="margin-right: 5px">
                             <label> Screenshot_00001.jpg </label>
                         </div>
                     </div>

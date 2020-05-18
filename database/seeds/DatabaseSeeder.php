@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
          $this->call(ActivityFilesSeeder::class);
         
          $this->call(TimeHistorySeeder::class);
+         $this->call(ScreenshotSeeder::class);
     }
 }
