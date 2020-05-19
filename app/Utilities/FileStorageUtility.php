@@ -17,7 +17,7 @@ class FileStorageUtility
     public function uploadOrGetFileFromS3($file_path, $content)
     {
         if (!Storage::disk('s3')->exists($file_path)) {
-            return Storage::disk('s3')->put($file_path, $content);
+            return Storage::disk('s3')->put($file_path, $content, 'public');
         }
         return Storage::disk('s3')->get($file_path);
     }

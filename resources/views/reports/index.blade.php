@@ -242,13 +242,16 @@
                             $('#timeEnd').text(data.time_history.time_end);
                             $('#timeConsumed').text(data.time_history.time_consumed);
                             for(let i = 0; i < data.screenshots.length; i++) {
-                                $('#datatable > tbody').append("<tr><td>"+data.screenshots[i]['screenshot_filename']+"</td></tr>");
+                                if (i == 0 ){
+                                    $('.screenshot > img').attr('src',data.screenshots[i]['screenshot_url']);
+                                }
+                                $('#datatable.screenshots').append("<tr><td data-url='"+data.screenshots[i]['screenshot_url']+"'>"+data.screenshots[i]['screenshot_filename']+"</td></tr>");
                             }
                             function clickHandler(e) {
-                                let screenshot = e.target.closest("td").innerHTML;
-                                $('.screenshot').text(screenshot);
+                                let url = $(this).attr('data-url');
+                                $('.screenshot > img').attr('src',url);
                             }
-                            document.querySelectorAll('#datatable td')
+                            document.querySelectorAll('#datatable.screenshots td')
                             .forEach(e => e.addEventListener("click", clickHandler));
                         }
                     },

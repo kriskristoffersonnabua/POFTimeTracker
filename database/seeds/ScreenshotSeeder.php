@@ -24,7 +24,7 @@ class ScreenshotSeeder extends Seeder
         $data = [
             [
                 'time_history_id'         =>  1,
-                'screenshot_filename'     =>  'Screenshot1.jpg'
+                'screenshot_filename'     =>  '92626572_2988569024537351_3994566103517888512_n.jpg'
             ],
             [
                 'time_history_id'         =>  1,

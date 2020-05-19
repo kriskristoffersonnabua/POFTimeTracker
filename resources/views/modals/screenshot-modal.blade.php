@@ -54,7 +54,7 @@
                     <div class="row" style="display: flex; padding: 0px 10px 10px 10px;">
                         <div class="x_panel" style="margin-right: 5px">
                             <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 500px">
-                                <table id="datatable" class="table table-striped projects">
+                                <table id="datatable" class="table table-striped screenshots">
                                     <tbody>
                                     </tbody>
                                 </table>
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="x_panel screenshot" style="margin-right: 5px">
-                            <label> Screenshot_00001.jpg </label>
+                            <img style="width: 100%;" src="" />
                         </div>
                     </div>
                 </div>
