@@ -26,31 +26,25 @@
                                     <div style="width: 350px;">
                                         <div style="display: inline-flex; padding-left: 20px;">
                                             <label> Sub Project No.: </label>
-                                            <p style="padding-left: 15px"> 00001 </p>
+                                            <p id="subproject_id" style="padding-left: 15px"> 00001 </p>
                                         </div>
 
                                         <div style="display: inline-flex; padding-left: 20px;">
                                             <label> Sub Project Name: </label>
-                                            <p style="padding-left: 15px"> Sub Project 101 </p>
+                                            <p id="subproject_name" style="padding-left: 15px"> Sub Project 101 </p>
                                         </div>
 
                                         <div style="display: inline-flex; padding-left: 20px; ">
                                             <label> Activity No.: </label>
-                                            <p style="padding-left: 15px"> 00001 </p>
+                                            <p id="activity_no" style="padding-left: 15px"> 00001 </p>
                                         </div>
 
-                                        <div style="padding-left: 20px; ">
+                                        <div id="tbas" style="padding-left: 20px; ">
                                             <label> TBAs: </label>
-                                            @for( $i= 0 ; $i < 5 ; $i ++ )
-                                            <p style="padding-left: 15px"> TBA {{ $i }} </p>
-                                            @endfor
                                         </div>
                                             
-                                        <div style="padding-left: 20px; ">
+                                        <div id='files' style="padding-left: 20px; ">
                                             <label> List of Files: </label>
-                                            @for( $i= 0 ; $i < 5 ; $i ++ )
-                                            <p style="padding-left: 15px"> File {{ $i }} </p>
-                                            @endfor
                                         </div>
 
                                     </div>
@@ -58,12 +52,12 @@
                                     <div style="width: 500px;">
                                         <div style="display: inline-flex; padding-left: 20px;">
                                             <label> Title </label>
-                                            <p style="padding-left: 15px"> Pesamakini Backend UI </p>
+                                            <p id="title" style="padding-left: 15px"> Pesamakini Backend UI </p>
                                         </div>
 
                                         <div style="display: inline-flex; padding-left: 20px; ">
                                             <label> Description: </label>
-                                            <p style="padding-left: 15px"> This is a description.
+                                            <p id="description" style="padding-left: 15px"> This is a description.
                                                 This is a description.
                                                 This is a description.
                                                 This is a description.
@@ -75,9 +69,7 @@
 
                                         <div style="padding-left: 20px; ">
                                             <label> Acceptance Criteria: </label>
-                                            @for( $i= 0 ; $i < 5 ; $i ++ )
-                                            <p style="padding-left: 15px"> Acceptance Criteria {{ $i }} </p>
-                                            @endfor
+                                            <p id="acceptance_criteria" style="padding-left: 15px"> Acceptance Criteria </p>
                                         </div>
 
                                     </div>
