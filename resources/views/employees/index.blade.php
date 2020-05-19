@@ -74,6 +74,8 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade add-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            @include('modals.add-employee-modal')
         </div>
     </div>
 </div>

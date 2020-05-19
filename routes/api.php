@@ -17,6 +17,17 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+    Route::group(['prefix' => '/employees'], function () {
+        Route::get('/', 'API\Employee\EmployeeController@index');
+        Route::get('/count', 'API\Employee\EmployeeController@count');
+        Route::post('/', 'API\Employee\EmployeeController@store');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/', 'API\Employee\EmployeeController@show');
+            Route::patch('/', 'API\Employee\EmployeeController@update');
+            Route::delete('/', 'API\Employee\EmployeeController@destroy');
+        });
+    });
+
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'API\Projects\ProjectsController@index');
         Route::get('/count', 'API\Projects\ProjectsController@count');

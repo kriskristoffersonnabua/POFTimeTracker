@@ -18,6 +18,16 @@ class FileStorageUtility
     {
         if (!Storage::disk('s3')->exists($file_path)) {
             return Storage::disk('s3')->put($file_path, $content, 'public');
+
+            // return Storage::disk('s3')->getDriver()->getAdapter()->getClient()->putObject(array(
+            //     'Bucket'        => env('AWS_BUCKET'),
+            //     'Key'           => $file_path,
+            //     'Body'          => $content,
+            //     'ACL'           => 'public-read',
+            //     'ContentType'   =>  $content->getMimeType(),
+            //     'Expires'       => 'Thu, 01 Dec 2030 16:00:00 GMT',
+            //     'CacheControl'  => 'max-age'
+            // ));
         }
         return Storage::disk('s3')->get($file_path);
     }
