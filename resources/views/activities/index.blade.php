@@ -372,18 +372,18 @@
 
                        activityFiles.forEach(function(files) {
                             $("#files").append("<a style='padding-left: 15px'></a>");
-                            $('a').attr('id', files.file_link);
-                            $("a").attr("href", files.file_link);
+                            $('#files > a').attr('id', files.file_link);
+                            $("#files > a").attr("href", files.file_link);
                             $('#files > a').text(files.file_link);
-                       });
-
+                        });
+                       
                        $('#tbas > p').length > 0 ?  $('#tbas > p').remove() : '' ; 
 
                        tbas.forEach(function(tba) {
                             $("#tbas").append("<p style='padding-left: 15px'></p>");
                             $('p').attr('id', files.file_link);
                             $('#tbas > p').text(files.file_link);
-                       });
+                        });
 
                     }
                 }
