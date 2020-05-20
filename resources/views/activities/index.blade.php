@@ -129,7 +129,7 @@
                                     </td>
                                     <td>
 
-                                        <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target=".view-modal">
+                                        <a href="#" class="btn btn-primary btn-xs viewActivity" data-view="{{url()->action('Admin\ActivitiesController@show', ['id' => $activity->id])}}" data-toggle="modal" data-target=".view-modal">
                                             <i class="fa fa-folder"></i> View 
                                         </a>
                                         {{-- @if(!auth()->user()->hasRole('administrator')) --}}
@@ -256,6 +256,13 @@
                 }).appendTo('#activityForm');
             });
 
+            $(document).on('click', '.viewActivity', function(event){
+                event.preventDefault();
+                selected = $(this);
+    
+                getActivityDetails(selected.data('view'), true);
+            })
+
             $(document).on('click','.assignActivity',function(event){
 
                 project_id =  $('#subproject').find('option:selected').data('project_id');
@@ -298,6 +305,7 @@
             $(document).on('click','.deleteActivity',function(event){
                 event.preventDefault();
                 selected = $(this);
+                
             });
 
             $(document).on('click','#confirmDelete',function(){
@@ -339,8 +347,7 @@
             });
         }
 
-        function getActivityDetails(link) {
-            
+        function getActivityDetails(link, fromView) {
             $.ajax({
                 type:'GET',
                 url: link,
@@ -348,7 +355,37 @@
                     "_token": "{{ csrf_token() }}"
                 },
                 success: function (data, status, xhr) {
-                    console.log(data)
+                    activityDetails = data.data.details;
+                    activityFiles = data.data.files;
+                    subprojectName = data.data.subproject;
+                    tbas = data.data.tba;
+                    
+                    if (fromView) {
+                       $('#subproject_id').text(activityDetails.subproject_id);
+                       $('#subproject_name').text(subprojectName.subproject_name);
+                       $('#activity_no').text(activityDetails.activity_no);
+                       $('#title').text(activityDetails.title);
+                       $('#description').text(activityDetails.description);
+                       $('#acceptance_criteria').text(activityDetails.acceptance_criteria);
+                       
+                       $('#files > a').length > 0 ?  $('#files > a').remove() : '' ; 
+
+                       activityFiles.forEach(function(files) {
+                            $("#files").append("<a style='padding-left: 15px'></a>");
+                            $('a').attr('id', files.file_link);
+                            $("a").attr("href", files.file_link);
+                            $('#files > a').text(files.file_link);
+                       });
+
+                       $('#tbas > p').length > 0 ?  $('#tbas > p').remove() : '' ; 
+
+                       tbas.forEach(function(tba) {
+                            $("#tbas").append("<p style='padding-left: 15px'></p>");
+                            $('p').attr('id', files.file_link);
+                            $('#tbas > p').text(files.file_link);
+                       });
+
+                    }
                 }
             });
         }

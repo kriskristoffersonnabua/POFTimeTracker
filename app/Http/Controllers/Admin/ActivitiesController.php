@@ -256,10 +256,10 @@ class ActivitiesController extends Controller
     {
         try {
             $activity = Activity::find($id);
-            $files = ActivityFile::select('id,activity_id,file_link,date_added')->where('activity_id', $id)->get();
-            //dd($activity->files->toArray());
-            //, 'files' => $activity->files->toArray()
-            return $this->sendResponse(['details' => $activity->toArray(), 'tba' => $activity->tbas->toArray(), 'files' => $files->toArray()], "Activity fetched.");
+            $files = ActivityFile::select('file_link')->where('activity_id', $id)->get();
+            $subproject = SubProjects::find($activity->subproject_id);
+
+            return $this->sendResponse(['details' => $activity->toArray(), 'subproject' => $subproject->toArray(),'tba' => $activity->tbas->toArray(), 'files' => $files->toArray()], "Activity fetched.");
         } catch(\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
