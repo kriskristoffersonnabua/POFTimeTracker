@@ -67,6 +67,14 @@ class User extends Authenticatable
 
     public $sortable = ['name', 'email', 'created_at', 'updated_at'];
 
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
     /**
      * The database table used by the model.
      *

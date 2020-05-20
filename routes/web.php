@@ -82,6 +82,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('/activities/{id}/assign', 'ActivitiesController@assign')->name('activities.assign');
     Route::patch('/activities/{id}/done', 'ActivitiesController@done')->name('activities.done');
     
+    Route::post('/employees', 'EmployeesController@create')->name('employees.create');
     //Users
     Route::get('users', 'UserController@index')->name('users');
     Route::get('users/restore', 'UserController@restore')->name('users.restore');

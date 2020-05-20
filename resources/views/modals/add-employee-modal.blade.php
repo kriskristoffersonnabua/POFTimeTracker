@@ -9,19 +9,25 @@
         <form id="addEditForm">
             @csrf
             <div class="modal-body">
+
                 <div style="padding: 10px">
-                    <label> Project No. </label>
-                    <input name="project_no" type="text" class="form-control" style="width: 100%" readonly="readonly" placeholder="00001" value="{{$next}}">
+                    <label> Employee No. </label>
+                    <input name="employee_no" type="text" class="form-control" style="width: 100%" value="{{$next}}" readonly="readonly" placeholder="00001"/>
                 </div>
 
                 <div style="padding: 10px">
-                    <label> Project Name </label>
-                    <input name="name" type="text" class="form-control" style="width: 100%"></input>
+                    <label> Email </label>
+                    <input name= "email" type="text" class="form-control" style="width: 100%"/>
                 </div>
 
                 <div style="padding: 10px">
-                    <label> Project Description </label>
-                    <textarea name="description" class="form-control" rows="3"></textarea>
+                    <label> First name </label>
+                    <input name= "first_name" type="text" class="form-control" style="width: 100%"/>
+                </div>
+
+                <div style="padding: 10px">
+                    <label> Last name </label>
+                    <input name= "last_name" type="text" class="form-control" style="width: 100%"/>
                 </div>
             </div>
             <div class="modal-footer">
