@@ -88,6 +88,8 @@ class ActivitiesController extends Controller
             $new_activity->description = $params['description'];
             $new_activity->acceptance_criteria = $params['acceptance_criteria'];
             $new_activity->estimated_hours = 0;
+            $new_activity->created_at = Carbon::now();
+            $new_activity->updated_at = Carbon::now();
             $new_activity->save();
 
             if(!empty($params['tba'])) {
