@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
          
          $this->call(ActivitiesSeeder::class);
          $this->call(ActivityFilesSeeder::class);
+         $this->call(ActivityCommentsSeeder::class);
         
          $this->call(TimeHistorySeeder::class);
          $this->call(ScreenshotSeeder::class);

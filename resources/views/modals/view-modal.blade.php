@@ -80,10 +80,10 @@
                         <div role="tabpanel" class="tab-pane fade" id="comments" aria-labelledby="profile-tab">
                             <div class="x_panel" style="padding: 10px;">
                                 <div style="padding: 10px">
-                                    <textarea class="form-control" rows="2" placeholder="Please type your comment here."></textarea>
+                                    <textarea id="textComment" class="form-control" rows="2" placeholder="Please type your comment here."></textarea>
                                 </div>
                                 <div  class="pull-right">
-                                    <button type="button" class="btn btn-primary">Add Comment</button>
+                                    <button type="button"  data-href="{{url()->action('Admin\ActivitiesController@addComment')}}"  class="btn btn-primary addComment">Add Comment</button>
                                 </div>
                                 
                                 <div class="x_content">
@@ -95,13 +95,7 @@
                                                     <th> Comment </th>                                               
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                @for( $i = 0; $i < 20; $i++)
-                                                <tr>
-                                                    <td style="width: 170px"> 01/01/2001 11:00am </td>
-                                                    <td> Comment number {{ $i }}</td>
-                                                </tr>
-                                                @endfor
+                                            <tbody id='comment'>
                                             </tbody>
                                         </table>
                                     </div>

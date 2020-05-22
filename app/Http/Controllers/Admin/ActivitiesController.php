@@ -258,10 +258,30 @@ class ActivitiesController extends Controller
             $activity = Activity::find($id);
             $files = ActivityFile::select('file_link')->where('activity_id', $id)->get();
             $subproject = SubProjects::find($activity->subproject_id);
-
-            return $this->sendResponse(['details' => $activity->toArray(), 'subproject' => $subproject->toArray(),'tba' => $activity->tbas->toArray(), 'files' => $files->toArray()], "Activity fetched.");
+            $activity_comments = ActivityComments::where('activity_id',$id)->get();
+            
+            return $this->sendResponse(['details' => $activity->toArray(), 'subproject' => $subproject->toArray(),'tba' => $activity->tbas->toArray(), 'files' => $files->toArray(), 'comments' => $activity_comments->toArray()], "Activity fetched.");
         } catch(\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function addComment(Request $request) {
+        try {
+            $request->validate([
+                'user_id' => 'required',
+                'comment' => 'required',
+                'date_added' => 'required'
+            ]);
+        } catch (\Exception $e) {
+            $errorCode = $e->getCode();
+
+            return $this->sendError(
+                'Activity comment could not be created',
+                ['error'=>$e->getMessage()],
+                $errorCode && $errorCode <= 500 ?
+                    $errorCode: 500
+            );
         }
     }
 
