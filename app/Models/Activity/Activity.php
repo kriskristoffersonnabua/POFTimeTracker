@@ -22,6 +22,7 @@ class Activity extends Model
         'estimated_hours',
         'status'
     ];
+    protected $appends = ['files', 'tbas'];
     
     public function subprojects() {
         return $this->belongsTo(
@@ -47,4 +48,11 @@ class Activity extends Model
         );
     }
 
+    public function getTbasAttribute() {
+        return $this->tbas()->get()->toArray();
+    }
+
+    public function getFilesAttribute() {
+        return $this->files()->get()->toArray();
+    }
 }

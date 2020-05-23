@@ -35,7 +35,6 @@ class SubProjectController extends Controller
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser($request);
-
         $params = $request->all();
         $subprojects = [];
 
