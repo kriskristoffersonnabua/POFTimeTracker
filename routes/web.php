@@ -77,6 +77,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/activities/activity_no', 'ActivitiesController@getNextActivityNo')->name('activities.activity_no');
     Route::post('/activities', 'ActivitiesController@create')->name('activities.create');
     Route::get('/activities/{id}', 'ActivitiesController@show')->name('activities.show');
+    Route::post('/comments', 'ActivitiesController@addComment')->name('activities.addComment');
     Route::patch('/activities/{id}', 'ActivitiesController@update')->name('activities.update');
     Route::delete('/activities/{id}', 'ActivitiesController@destroy')->name('activities.destroy');
     Route::post('/activities/{id}/assign', 'ActivitiesController@assign')->name('activities.assign');

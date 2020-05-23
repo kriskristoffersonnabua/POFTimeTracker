@@ -305,7 +305,30 @@
             $(document).on('click','.deleteActivity',function(event){
                 event.preventDefault();
                 selected = $(this);
-                
+            });
+
+            $(document).on('click','.addComment', function(event){
+                event.preventDefault();
+                selected = $(this);
+                comments = $('#textComment').val();
+                console.log(comments);
+                $.ajax({
+                    method: "POST",
+                    url: 'admin/comments',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'comment': comments,
+                        'data_added':  date("Y-m-d H:i:s"),
+                        'user_id':  1
+                    },
+                    success: function (data, status, xhr) {
+                        // if(data.success)
+                            location.reload();
+                    },
+                    error: function(){
+                        alert("Something went wrong.");
+                    }
+                });
             });
 
             $(document).on('click','#confirmDelete',function(){
@@ -355,10 +378,11 @@
                     "_token": "{{ csrf_token() }}"
                 },
                 success: function (data, status, xhr) {
-                    activityDetails = data.data.details;
-                    activityFiles = data.data.files;
-                    subprojectName = data.data.subproject;
-                    tbas = data.data.tba;
+                    const  activityDetails = data.data.details;
+                    const activityFiles = data.data.files;
+                    const subprojectName = data.data.subproject;
+                    const tbas = data.data.tba;
+                    const comments = data.data.comments;
                     
                     if (fromView) {
                        $('#subproject_id').text(activityDetails.subproject_id);
@@ -372,17 +396,23 @@
 
                        activityFiles.forEach(function(files) {
                             $("#files").append("<a style='padding-left: 15px'></a>");
-                            $('a').attr('id', files.file_link);
-                            $("a").attr("href", files.file_link);
+                            $('#files > a').attr('id', files.file_link);
+                            $("#files > a").attr("href", files.file_link);
                             $('#files > a').text(files.file_link);
-                       });
-
+                        });
+                       
                        $('#tbas > p').length > 0 ?  $('#tbas > p').remove() : '' ; 
 
                        tbas.forEach(function(tba) {
                             $("#tbas").append("<p style='padding-left: 15px'></p>");
                             $('p').attr('id', files.file_link);
                             $('#tbas > p').text(files.file_link);
+                        });
+                       
+                       $('#comment > tr').length > 0 ? $('#comment > tr').remove(): '';
+
+                       comments.forEach(function(comment) {
+                            $("#comment").append('<tr><td style="width: 170px">' + comment.date_added +'</td><td>' + comment.comment +'</td></tr>');
                        });
 
                     }
