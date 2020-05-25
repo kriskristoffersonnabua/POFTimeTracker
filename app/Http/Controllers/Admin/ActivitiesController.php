@@ -255,12 +255,14 @@ class ActivitiesController extends Controller
     public function show(Request $request, $id)
     {
         try {
+            
             $activity = Activity::find($id);
             $files = ActivityFile::select('file_link')->where('activity_id', $id)->get();
             $subproject = SubProjects::find($activity->subproject_id);
-            $activity_comments = ActivityComments::where('activity_id',$id)->get();
+            $activity_comments = ActivityComments::orderBy('id', 'DESC')->where('activity_id',$id)->get();
+            $user = \Auth::user();
             
-            return $this->sendResponse(['details' => $activity->toArray(), 'subproject' => $subproject->toArray(),'tba' => $activity->tbas->toArray(), 'files' => $files->toArray(), 'comments' => $activity_comments->toArray()], "Activity fetched.");
+            return $this->sendResponse(['details' => $activity->toArray(), 'subproject' => $subproject->toArray(),'tba' => $activity->tbas->toArray(), 'files' => $files->toArray(), 'comments' => $activity_comments->toArray(), 'user' => $user], "Activity fetched.");
         } catch(\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
@@ -271,8 +273,20 @@ class ActivitiesController extends Controller
             $request->validate([
                 'user_id' => 'required',
                 'comment' => 'required',
-                'date_added' => 'required'
             ]);
+
+            $params = $request->all();
+            $activity = Activity::where('activity_no', $params['activity_no'])->get()->toArray();
+            
+            $new_activity_comment = new ActivityComments;
+            $new_activity_comment->activity_id = $activity[0]['id'];
+            $new_activity_comment->user_id = $params['user_id'];
+            $new_activity_comment->comment = $params['comment'];
+            $new_activity_comment->date_added = date("Y-m-d H:i:s");
+            $new_activity_comment->save();
+
+            return $this->sendResponse($new_activity_comment->toArray(), 'Activity comment Created.');
+
         } catch (\Exception $e) {
             $errorCode = $e->getCode();
 

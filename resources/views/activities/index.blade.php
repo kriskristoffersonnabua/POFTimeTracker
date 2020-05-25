@@ -207,10 +207,8 @@
 
 
 @push('scripts')
-    <script type="text/javascript">
-
-        var subproject_id , updated_activity_no;
-
+    <script type="text/javascript" >
+        var subproject_id , updated_activity_no, user_id;
         $(document).ready(function(){
             $("#select-project").change(function(){
                 window.location = "?project_id=" + $(this).val();
@@ -311,19 +309,22 @@
                 event.preventDefault();
                 selected = $(this);
                 comments = $('#textComment').val();
-                console.log(comments);
+                activity_no = $('#activity_no').text();
+                
                 $.ajax({
                     method: "POST",
                     url: 'admin/comments',
                     data: {
                         "_token": "{{ csrf_token() }}",
                         'comment': comments,
-                        'data_added':  date("Y-m-d H:i:s"),
-                        'user_id':  1
+                        'user_id':  user_id,
+                        'activity_no': parseInt(activity_no)
                     },
                     success: function (data, status, xhr) {
-                        // if(data.success)
-                            location.reload();
+                        if(data.success) {
+                            $('#textComment').val('');
+                            $("#comment").prepend('<tr><td style="width: 170px">' + data.data.date_added +'</td><td>' + data.data.comment +'</td></tr>');
+                        }       
                     },
                     error: function(){
                         alert("Something went wrong.");
@@ -378,13 +379,16 @@
                     "_token": "{{ csrf_token() }}"
                 },
                 success: function (data, status, xhr) {
-                    const  activityDetails = data.data.details;
+                    const activityDetails = data.data.details;
                     const activityFiles = data.data.files;
                     const subprojectName = data.data.subproject;
                     const tbas = data.data.tba;
                     const comments = data.data.comments;
-                    
+                    const user = data.data.user;
+
                     if (fromView) {
+                       user_id = user.id;
+
                        $('#subproject_id').text(activityDetails.subproject_id);
                        $('#subproject_name').text(subprojectName.subproject_name);
                        $('#activity_no').text(activityDetails.activity_no);
@@ -419,7 +423,6 @@
                 }
             });
         }
-
     </script>
 @endpush
 
